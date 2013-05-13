@@ -1,0 +1,200 @@
+Kevin Langer
+CS3500
+
+Provided specs below: 
+
+  Static methods:
+
+
+    emptySet  :                       ->  FSet
+
+
+  Static methods:
+
+
+    emptySet  :                       ->  FSet
+
+    insert    : FSet x String         ->  FSet
+
+    put       : FSet x String         ->  FSet
+
+    size      : FSet                  ->  int
+
+    isEmpty   : FSet                  ->  boolean
+
+    contains  : FSet x String         ->  boolean
+
+    isSubset  : FSet x FSet           ->  boolean
+
+    remove    : FSet x String         ->  FSet
+
+    union     : FSet x FSet           ->  FSet
+
+    intersect : FSet x FSet           ->  FSet
+
+
+  Dynamic methods (for which the receiver is an FSet):
+
+    toString  :                       ->  String
+
+    equals    :  Object               ->  boolean
+
+    hashCode  :                       ->  int
+
+
+Restrictions:
+
+
+    Null arguments may not be passed to any of the above methods except for equals(Object).
+
+
+Algebraic specification:
+
+
+    FSet.put (s, k)  =  s
+
+                      if FSet.contains (s, k)
+
+    FSet.put (s, k)  =  FSet.insert (s, k)
+
+                      if ! (FSet.contains (s, k))
+
+
+    FSet.size (FSet.emptySet())  =  0
+
+    FSet.size (FSet.insert (s0, k0))
+
+        =  FSet.size (s0)
+
+                      if FSet.contains (s0, k0)
+
+    FSet.size (FSet.insert (s0, k0))
+
+        =  1 + FSet.size (s0)
+
+                      if ! (FSet.contains (s0, k0))
+
+
+    FSet.isEmpty (FSet.emptySet())  =  true
+
+    FSet.isEmpty (FSet.insert(s0, k0))  =  false
+
+
+    FSet.contains (FSet.emptySet(), k)  =  false
+
+    FSet.contains (FSet.insert (s0, k0), k)
+
+        =  true
+
+                      if k.equals(k0)
+
+    FSet.contains (FSet.insert (s0, k0), k)
+
+        =  FSet.contains (s0, k)
+
+                      if ! (k.equals(k0))
+
+
+    FSet.isSubset (FSet.emptySet(), s2)  =  true
+
+    FSet.isSubset (FSet.insert (s0, k0), s2)
+
+        =  FSet.isSubset (s0, s2)
+
+                      if FSet.contains (s2, k0)
+
+    FSet.isSubset (FSet.insert (s0, k0), s2)
+
+        =  false 
+
+                      if ! (FSet.contains (s2, k0))
+
+
+    FSet.remove (FSet.emptySet(), k)  =  FSet.emptySet()
+
+    FSet.remove (FSet.insert (s0, k0), k)
+
+        =  FSet.remove (s0, k)
+
+                      if k.equals(k0)
+
+    FSet.remove (FSet.insert (s0, k0), k)
+
+        =  FSet.insert (FSet.remove (s0, k), k0)
+
+                      if ! (k.equals(k0))
+
+
+    FSet.union (FSet.emptySet(), s2)  =  s2
+
+    FSet.union (FSet.insert (s0, k0), s2)
+
+        =  FSet.union (s0, s2)
+
+                      if FSet.contains (s2, k0)
+
+    FSet.union (FSet.insert (s0, k0), s2)
+
+        =  FSet.insert (FSet.union (s0, s2), k0)
+
+                      if ! (FSet.contains (s2, k0))
+
+
+    FSet.intersect (FSet.emptySet(), s2)  =  FSet.emptySet()
+
+    FSet.intersect (FSet.insert (s0, k0), s2)
+
+        =  FSet.insert (FSet.intersect (s0, s2), k0)
+
+                      if FSet.contains (s2, k0)
+
+    FSet.intersect (FSet.insert (s0, k0), s2)
+
+        =  FSet.intersect (s0, s2)
+
+                      if ! (FSet.contains (s2, k0))
+
+
+    s.toString() = "{...(" + FSet.size(s) + " Strings)...}"
+
+
+Values of the FSet ADT shall also implement the public
+
+dynamic methods equals(Object) and hashCode() such that
+
+
+    If s1 is a value of the FSet ADT, then
+
+
+        s1.equals(null) returns false.
+
+
+    If s1 is a value of the FSet ADT, but x is not, then
+
+
+        s1.equals(x) returns false.
+
+
+    If s1 and s2 are values of the FSet ADT, then
+
+    s1.equals(s2) if and only if
+
+
+        for every String k
+
+
+            FSet.contains (s1, k) if and only if
+
+            FSet.contains (s2, k)
+
+
+    If s1 and s2 are values of the FSet ADT, and
+
+
+        s1.equals(s2)
+
+
+    then s1.hashCode() == s2.hashCode().
+
+
+
