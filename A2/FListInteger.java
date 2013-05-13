@@ -61,20 +61,10 @@ public abstract class FListInteger {
 class Empty extends FListInteger {
     Empty() {}
      Integer getMethod( int n ) {
-        if ( n == 0 ) { 
-            return null;
-        } else if (n < 0 ) { 
-             throw new RuntimeException("Attempted to get negative number");      
-        }
-        return get( this,n-1 );
+        throw new RuntimeException("Attempted to get from empty list");
     }
     FListInteger setMethod( int n, Integer y ) {
-        if ( n == 0 ) { 
-            return add(this,y);
-        } else if (n < 0 ) { 
-             throw new RuntimeException("Attempted to get negative number");      
-        }
-        return add( set(this,n-1,y),null);
+        throw new RuntimeException("Attempted to set an empty list"); 
     }
     boolean isEmptyMethod() {
         return true;    
@@ -101,7 +91,7 @@ class Add extends FListInteger {
         if ( n == 0 ) { 
             return x;
         } else if (n < 0 ) { 
-             throw new RuntimeException("Attempted to get negative number");      
+             throw new RuntimeException("Attempted to get negative index");      
         }
         return get( f,n-1 );
     }
@@ -109,7 +99,7 @@ class Add extends FListInteger {
         if ( n == 0 ) { 
             return add(f,y);
         } else if (n < 0 ) { 
-             throw new RuntimeException("Attempted to get negative number");      
+             throw new RuntimeException("Attempted to set negative index");      
         }
         return add( set(f,n-1,y),x);
     }
@@ -129,6 +119,7 @@ class Add extends FListInteger {
         if( isEmpty(f) ) { 
             return "[" + x.toString() + "]";
         }
-        return "[" + x.toString() + ", " +  f.toString().substring(1, f.toString().length());
+        return "[" + x.toString() + ", " 
+            +  f.toString().substring(1, f.toString().length());
     }
 }

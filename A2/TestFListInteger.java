@@ -61,35 +61,36 @@ public class TestFListInteger {
 
     /**
      * Creates some FSet objects.
+     * Using add and empty.
      */
     private void creation () {
         try {
-            f0 = FListInteger.emptyList();
-            f1 = FListInteger.add (f0, zero);
-            f2 = FListInteger.add (f1, one);
-            f3 = FListInteger.add (f2, two);
-            f4 = FListInteger.add (f3, three);
-            f5 = FListInteger.add (FListInteger.add (f2, two), zero);
+            f0 = FListInteger.emptyList();      //[]
+            f1 = FListInteger.add (f0, zero);   //[0] 
+            f2 = FListInteger.add (f1, one);    //[1, 0]
+            f3 = FListInteger.add (f2, two);    //[2, 1, 0]
+            f4 = FListInteger.add (f3, three);  //[3, 2, 1, 0]
+            f5 = FListInteger.add (FListInteger.add (f2, two), zero); //[0, 2, 1, 0]
+            System.out.println(f4);
+            f6 = FListInteger.emptyList();      //[]
+            f6 = FListInteger.add (f6, zero);   //[0]
+            f6 = FListInteger.add (f6,  zero);  //[0,0]          
             
-            f6 = FListInteger.emptyList();
-            f6 = FListInteger.set (f6, 0, zero);
-            f6 = FListInteger.set (f6, 1, zero);            
-            
-            f7 = FListInteger.add (f0, zero);
+            f7 = FListInteger.add (f0, zero);   //[0]
             f7 = FListInteger.add (f7, four);
             f7 = FListInteger.add (f7, four);
             f7 = FListInteger.add (f7, four);
             f7 = FListInteger.add (f7, five);
 
-            f8 = FListInteger.set (f0, 0, one);
-            f8 = FListInteger.set (f8, 1, two);
-            f8 = FListInteger.set (f8, 2, three);
-            f8 = FListInteger.set (f8, 3, four);
+            f8 = FListInteger.add (f0, four);
+            f8 = FListInteger.add (f8, three);
+            f8 = FListInteger.add (f8, two);
+            f8 = FListInteger.add (f8, one);
             
-            f9 = FListInteger.set (f7, 5, one);
-            f9 = FListInteger.set (f9, 6, two);
-            f9 = FListInteger.set (f9, 7, three);
-            f9 = FListInteger.set (f9, 8, four);
+            f9 = FListInteger.add (f7, four);
+            f9 = FListInteger.add (f9, three);
+            f9 = FListInteger.add (f9, two);
+            f9 = FListInteger.add (f9, one);
 
             f10 = FListInteger.add (f0, four);
             f10 = FListInteger.add (f10, three);
@@ -110,6 +111,7 @@ public class TestFListInteger {
 
     /**
      * Tests the accessors.
+     * Such as: isEmpty, size, contains, get, and set
      */
     private void accessors (int nargs) {
         try {
@@ -122,6 +124,7 @@ public class TestFListInteger {
             assertTrue ("f0.size()", FListInteger.size (f0) == 0);
             assertTrue ("f1.size()", FListInteger.size (f1) == 1);
             assertTrue ("f8.size()", FListInteger.size (f8) == 4);
+
             assertTrue ("f9.size()", FListInteger.size (f9) == 9);
             assertTrue ("f10.size()", FListInteger.size (f10) == 4);
             //testing contains
@@ -142,17 +145,32 @@ public class TestFListInteger {
             assertTrue("contains74", FListInteger.contains (f7, four)); 
             assertTrue("contains81", FListInteger.contains (f8, one));  
             assertTrue("contains92", FListInteger.contains (f9, two));   
-            //testing get
-            assertTrue("get empty",FListInteger.get(f0,0) == null);
-            assertTrue("get n=0",FListInteger.get(f10,0).equals(one));  
-            assertFalse("get n>0",FListInteger.get(f9,8).equals(three));   
-            assertTrue("get n> 0",FListInteger.get(f7,FListInteger.size(f7)-1).equals(zero));
-            assertTrue("get n= 0",FListInteger.get(f7,0).equals(five));
-            //testing set
-            assertFalse("set n=0",FListInteger.set(f2,0,zero).equals(f2));
-            assertTrue("set n = 0",FListInteger.set(f2,0,zero).equals(f11));
-            assertTrue("set n > 0", FListInteger.set (f10, 1, two).equals(f8) );
-
+            /*testing get
+             * Note: behavior beyond 0<n<=size() is unkown and not tested
+             */ 
+            assertTrue("get n=0 f10",
+                FListInteger.get(f10,0).equals(one));  
+            assertFalse("get n>0 f9",
+                FListInteger.get(f9,8).equals(three));   
+            assertTrue("get n> 0 f7",
+                FListInteger.get(f7,FListInteger.size(f7)-1).equals(zero));
+            assertTrue("get n= 0 f7",
+                FListInteger.get(f7,0).equals(five));
+            assertFalse("get n> 0 f8",
+                FListInteger.get(f8,2).equals(two));
+            /*testing set
+             * Note: behavior beyond 0<n<=size() is unkown and not tested
+             */ 
+            assertFalse("set n=0 f2",
+                FListInteger.set(f2,0,zero).equals(f2));
+            assertTrue("set n = 0 f2",
+                FListInteger.set(f2,0,zero).equals(f11));
+            assertTrue("set n > 0 f10",
+                FListInteger.set (f10, 1, two).equals(f8));
+            assertTrue("set f > 0 f6",
+                FListInteger.set(f6,1,one).toString().equals("[0, 1]"));
+            assertFalse("set f > 0 f6",
+                FListInteger.set(f6,1,one).toString().equals("[0, 0]"));
         }
         catch (Exception e) {
             System.out.println("Exception thrown during accessors tests:");
@@ -163,6 +181,7 @@ public class TestFListInteger {
 
     /**
      * Tests the usual overridden methods.
+     * Such as: toString, equals, and hashCode
      */
     private void usual () {
         try {
