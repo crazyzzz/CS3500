@@ -29,6 +29,9 @@ public abstract class FListInteger {
         return f.containsMethod(y);
     }
     public boolean equals(FListInteger f2) {
+        if (f2 == null) {
+            return false;
+        }
         int size_v = this.sizeMethod();
         if (size_v != f2.sizeMethod()) {
             return false;
@@ -42,9 +45,17 @@ public abstract class FListInteger {
     }
     public boolean equals(Object f2) {
         if (f2 instanceof FListInteger) {
-            return equals(f2);
+            return equals((FListInteger) f2);
         }
         return false;
+    }
+    public int hashCode() {
+        int size_v = this.sizeMethod();
+        int hash = 0;
+        while (size_v > 0) {
+            hash=hash*5 + (this.getMethod(--size_v).intValue()+7);
+        }
+        return hash;
     }
 }
 class Empty extends FListInteger {
@@ -76,9 +87,6 @@ class Empty extends FListInteger {
     }
     public String toString() {
         return "[]";
-    }
-    public int hashCode() {
-        return 0;
     }
 }
 class Add extends FListInteger {
@@ -122,13 +130,5 @@ class Add extends FListInteger {
             return "[" + x.toString() + "]";
         }
         return "[" + x.toString() + ", " +  f.toString().substring(1, f.toString().length());
-    }
-    public int hashCode() {
-        int size_v = size(f);
-        int hash = 0;
-        while (size_v > 0) {
-            hash=hash*5 + get(f,--size_v).intValue();
-        }
-        return hash;
     }
 }
