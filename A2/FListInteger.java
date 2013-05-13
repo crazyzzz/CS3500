@@ -64,7 +64,7 @@ class Empty extends FListInteger {
         throw new RuntimeException("Attempted to get from empty list");
     }
     FListInteger setMethod( int n, Integer y ) {
-        throw new RuntimeException("Attempted to set an empty list"); 
+        throw new RuntimeException("Attempted to set an invalid index"); 
     }
     boolean isEmptyMethod() {
         return true;    

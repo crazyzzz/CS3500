@@ -71,35 +71,34 @@ public class TestFListInteger {
             f3 = FListInteger.add (f2, two);    //[2, 1, 0]
             f4 = FListInteger.add (f3, three);  //[3, 2, 1, 0]
             f5 = FListInteger.add (FListInteger.add (f2, two), zero); //[0, 2, 1, 0]
-            System.out.println(f4);
             f6 = FListInteger.emptyList();      //[]
             f6 = FListInteger.add (f6, zero);   //[0]
             f6 = FListInteger.add (f6,  zero);  //[0,0]          
             
             f7 = FListInteger.add (f0, zero);   //[0]
-            f7 = FListInteger.add (f7, four);
-            f7 = FListInteger.add (f7, four);
-            f7 = FListInteger.add (f7, four);
-            f7 = FListInteger.add (f7, five);
+            f7 = FListInteger.add (f7, four);   //[4, 0]
+            f7 = FListInteger.add (f7, four);   //[4, 4, ,0]
+            f7 = FListInteger.add (f7, four);   //[4, 4, 4, 0]
+            f7 = FListInteger.add (f7, five);   //[5, 4, 4, 4, 0]
 
-            f8 = FListInteger.add (f0, four);
-            f8 = FListInteger.add (f8, three);
-            f8 = FListInteger.add (f8, two);
-            f8 = FListInteger.add (f8, one);
+            f8 = FListInteger.add (f0, four);     //[4]
+            f8 = FListInteger.add (f8, three);   //[3, 4]
+            f8 = FListInteger.add (f8, two);     //[2, 3, 4] 
+            f8 = FListInteger.add (f8, one);     //[1, 2, 3, 4]
             
-            f9 = FListInteger.add (f7, four);
-            f9 = FListInteger.add (f9, three);
-            f9 = FListInteger.add (f9, two);
-            f9 = FListInteger.add (f9, one);
+            f9 = FListInteger.add (f7, four);    //[4, 5, 4, 4, 4, 0]
+            f9 = FListInteger.add (f9, three);  //[3, 4, 5, 4, 4, 4, 0]
+            f9 = FListInteger.add (f9, two);    //[2, 3, 4, 5, 4, 4, 4, 0]
+            f9 = FListInteger.add (f9, one);    //[1, 2, 3, 4, 5, 4, 4, 4, 0]
 
-            f10 = FListInteger.add (f0, four);
-            f10 = FListInteger.add (f10, three);
-            f10 = FListInteger.add (f10, three);
-            f10 = FListInteger.add (f10, one);
+            f10 = FListInteger.add (f0, four);      //[4]
+            f10 = FListInteger.add (f10, three);  //[3, 4]  
+            f10 = FListInteger.add (f10, three);  //[3, 3, 4]
+            f10 = FListInteger.add (f10, one);    //[1, 3, 3, 4]
 
-            f11 = FListInteger.emptyList();
-            f11 = FListInteger.add (f11, zero);
-            f11 = FListInteger.add (f11, zero);
+            f11 = FListInteger.emptyList();        //[]
+            f11 = FListInteger.add (f11, zero);   //[0]
+            f11 = FListInteger.add (f11, zero);   //[0, 0]
 
         }
         catch (Exception e) {
@@ -145,6 +144,7 @@ public class TestFListInteger {
             assertTrue("contains74", FListInteger.contains (f7, four)); 
             assertTrue("contains81", FListInteger.contains (f8, one));  
             assertTrue("contains92", FListInteger.contains (f9, two));   
+            assertFalse("contains92115", FListInteger.contains(f11,five));
             /*testing get
              * Note: behavior beyond 0<n<=size() is unkown and not tested
              */ 
@@ -171,6 +171,8 @@ public class TestFListInteger {
                 FListInteger.set(f6,1,one).toString().equals("[0, 1]"));
             assertFalse("set f > 0 f6",
                 FListInteger.set(f6,1,one).toString().equals("[0, 0]"));
+             assertTrue("set f > 0 f11",
+                FListInteger.contains(FListInteger.set(f11,1,five),five));
         }
         catch (Exception e) {
             System.out.println("Exception thrown during accessors tests:");
@@ -196,9 +198,9 @@ public class TestFListInteger {
             assertTrue ("equals00", f0.equals(f0));
             assertTrue ("equals33", f3.equals(f3));
             assertTrue ("equals55", f5.equals(f5));
-            assertTrue ("equals46", f4.equals(f4));
-            assertTrue ("equals64", f6.equals(f11));
-
+            assertTrue ("equals44", f4.equals(f4));
+            assertTrue ("equals611", f6.equals(f11));
+        
             assertFalse ("equals01", f0.equals(f1));
             assertFalse ("equals02", f0.equals(f2));
             assertFalse ("equals10", f1.equals(f0));
@@ -206,7 +208,8 @@ public class TestFListInteger {
             assertFalse ("equals21", f2.equals(f1));
             assertFalse ("equals23", f2.equals(f3));
             assertFalse ("equals35", f3.equals(f5));
-            
+            assertFalse ("equals97", f9.equals(f7));
+
             assertFalse ("equals0string", f0.equals(new Integer(0)));
 	        assertFalse ("equals0string", f0.equals("just a string"));
             assertFalse ("equals4string", f4.equals("just a string"));
@@ -215,10 +218,15 @@ public class TestFListInteger {
             assertFalse ("equals1null", f1.equals(null));
     
             //testing hashCode
-            assertTrue ("hashCode00", f0.hashCode() == f0.hashCode());
-            assertTrue ("hashCode44", f4.hashCode() == f4.hashCode());
-            assertTrue ("hashCode46", FListInteger.set(f2,0,zero).hashCode() == f11.hashCode());
-            assertTrue ("hashCode27", FListInteger.set (f10, 1, two).hashCode() == f8.hashCode());
+            assertTrue ("hashCode00", 
+                f0.hashCode() == f0.hashCode());
+            assertTrue ("hashCode44", 
+                f4.hashCode() == f4.hashCode());
+            assertTrue ("hashCode46", 
+                FListInteger.set(f2,0,zero).hashCode() == f11.hashCode());
+            assertTrue ("hashCode27", 
+                FListInteger.set (f10, 1, two).hashCode() == f8.hashCode());
+            assertTrue ("hashCode611", f6.hashCode() == f11.hashCode());
         }
         catch (Exception e) {
             System.out.println("Exception thrown during usual tests:");
