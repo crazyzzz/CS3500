@@ -28,6 +28,24 @@ public abstract class FListInteger {
     public static boolean contains(FListInteger f, Integer y) {
         return f.containsMethod(y);
     }
+    public boolean equals(FListInteger f2) {
+        int size_v = this.sizeMethod();
+        if (size_v != f2.sizeMethod()) {
+            return false;
+        }
+        for (int i = 0; i < size_v; i++ ) {
+            if ( !(this.getMethod(i).equals( f2.getMethod(i) ) ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean equals(Object f2) {
+        if (f2 instanceof FListInteger) {
+            return equals(f2);
+        }
+        return false;
+    }
 }
 class Empty extends FListInteger {
     Empty() {}
@@ -109,7 +127,7 @@ class Add extends FListInteger {
         int size_v = size(f);
         int hash = 0;
         while (size_v > 0) {
-            hash+=get(f,size_v--).intValue();
+            hash=hash*5 + get(f,--size_v).intValue();
         }
         return hash;
     }
