@@ -5,8 +5,7 @@ JC = javac
 	$(JC) $(JFLAGS) $*.java
 
 CLASSES = \
-	FSet.java \
-	TestFSet.java
+	FListInteger.java 
 
 default: classes
 

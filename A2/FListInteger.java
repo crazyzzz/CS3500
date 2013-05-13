@@ -59,7 +59,7 @@ class Empty extends FListInteger {
     public String toString() {
         return "[]";
     }
-    public hashCode() {
+    public int hashCode() {
         return 0;
     }
 }
@@ -105,11 +105,12 @@ class Add extends FListInteger {
         }
         return "[" + x.toString() + ", " +  f.toString().substring(1, f.toString().length());
     }
-    public hashCode() {
-        int code = 0;
-        if ( contains(f,x) )   {
-            code = hashcode();
+    public int hashCode() {
+        int size_v = size(f);
+        int hash = 0;
+        while (size_v > 0) {
+            hash+=get(f,size_v--).intValue();
         }
-        return code + hashcode();
+        return hash;
     }
 }
