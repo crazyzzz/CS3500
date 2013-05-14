@@ -1,7 +1,9 @@
 /**
- * Basic test program for assignment 1 - FSet.
- * @author Clinger
- * @author Schmidt
+ * Assignment 2 - TestFListInteger
+ * @author Kevin Langer
+ * klanger@ccs.neu.edu
+ *
+ * Basic test program for assignment 2/3 - FListInteger.
  */
 public class TestFListInteger {
 
@@ -35,7 +37,7 @@ public class TestFListInteger {
 
     public TestFListInteger () { }
 
-    // String objects to serve as elements.
+    // Integer objects to serve as elements of the List.
    
     private final Integer zero = new Integer(0);
     private final Integer one = new Integer(1);
@@ -44,7 +46,7 @@ public class TestFListInteger {
     private final Integer four= new Integer(4);
     private final Integer five= new Integer(5);
 
-    // FSet objects to be created and then tested.
+    // FListInteger objects to be created and then tested.
 
     private FListInteger f0;
     private FListInteger f1;
@@ -60,8 +62,8 @@ public class TestFListInteger {
     private FListInteger f11;
 
     /**
-     * Creates some FSet objects.
-     * Using add and empty.
+     * Creates some FListInteger objects.
+     * Using add and emptyList.
      */
     private void creation () {
         try {
@@ -70,7 +72,7 @@ public class TestFListInteger {
             f2 = FListInteger.add (f1, one);    //[1, 0]
             f3 = FListInteger.add (f2, two);    //[2, 1, 0]
             f4 = FListInteger.add (f3, three);  //[3, 2, 1, 0]
-            f5 = FListInteger.add (FListInteger.add (f2, two), zero); //[0, 2, 1, 0]
+            f5 = FListInteger.add (f3, zero);   //[0, 2, 1, 0]
             f6 = FListInteger.emptyList();      //[]
             f6 = FListInteger.add (f6, zero);   //[0]
             f6 = FListInteger.add (f6,  zero);  //[0,0]          
@@ -111,6 +113,7 @@ public class TestFListInteger {
     /**
      * Tests the accessors.
      * Such as: isEmpty, size, contains, get, and set
+     * Nomenclature- [name of test][FList object #][Integer object #]
      */
     private void accessors (int nargs) {
         try {
@@ -145,19 +148,23 @@ public class TestFListInteger {
             assertTrue("contains81", FListInteger.contains (f8, one));  
             assertTrue("contains92", FListInteger.contains (f9, two));   
             assertFalse("contains92115", FListInteger.contains(f11,five));
+           
             /*testing get
              * Note: behavior beyond 0<n<=size() is unkown and not tested
              */ 
             assertTrue("get n=0 f10",
                 FListInteger.get(f10,0).equals(one));  
             assertFalse("get n>0 f9",
-                FListInteger.get(f9,8).equals(three));   
+                FListInteger.get(f9,8).equals(three)); 
+            assertTrue("get n>0 f9",
+                FListInteger.get(f9,8).equals(zero));   
             assertTrue("get n> 0 f7",
                 FListInteger.get(f7,FListInteger.size(f7)-1).equals(zero));
             assertTrue("get n= 0 f7",
                 FListInteger.get(f7,0).equals(five));
             assertFalse("get n> 0 f8",
                 FListInteger.get(f8,2).equals(two));
+            
             /*testing set
              * Note: behavior beyond 0<n<=size() is unkown and not tested
              */ 
@@ -187,6 +194,7 @@ public class TestFListInteger {
      */
     private void usual () {
         try {
+
              //testing toString
             assertTrue ("toString0",
                         f0.toString().equals("[]"));
@@ -194,13 +202,19 @@ public class TestFListInteger {
                         f1.toString().equals("[0]"));
             assertTrue ("toString8",
                         f8.toString().equals("[1, 2, 3, 4]"));
+            assertTrue("toString9",
+                        f9.toString().equals("[1, 2, 3, 4, 5, 4, 4, 4, 0]"));
+            assertFalse("toString10",
+                        f10.toString().equals("[]"));
+
             //testing equals
             assertTrue ("equals00", f0.equals(f0));
             assertTrue ("equals33", f3.equals(f3));
             assertTrue ("equals55", f5.equals(f5));
             assertTrue ("equals44", f4.equals(f4));
             assertTrue ("equals611", f6.equals(f11));
-        
+
+            //testing in-equalality
             assertFalse ("equals01", f0.equals(f1));
             assertFalse ("equals02", f0.equals(f2));
             assertFalse ("equals10", f1.equals(f0));
@@ -210,14 +224,19 @@ public class TestFListInteger {
             assertFalse ("equals35", f3.equals(f5));
             assertFalse ("equals97", f9.equals(f7));
 
+            //testing in-equalality to wrong object
             assertFalse ("equals0string", f0.equals(new Integer(0)));
 	        assertFalse ("equals0string", f0.equals("just a string"));
             assertFalse ("equals4string", f4.equals("just a string"));
 
+            //testing in-equalality to null object
             assertFalse ("equals0null", f0.equals(null));
             assertFalse ("equals1null", f1.equals(null));
     
-            //testing hashCode
+            /*testing hashCode
+             * hashCode implementation unkown, so only equal objects
+             * have equal hash codes 
+             */
             assertTrue ("hashCode00", 
                 f0.hashCode() == f0.hashCode());
             assertTrue ("hashCode44", 
