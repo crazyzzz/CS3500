@@ -73,6 +73,7 @@ public class TestFListInteger {
             f3 = FListInteger.add (f2, two);    //[2, 1, 0]
             f4 = FListInteger.add (f3, three);  //[3, 2, 1, 0]
             f5 = FListInteger.add (f3, zero);   //[0, 2, 1, 0]
+            
             f6 = FListInteger.emptyList();      //[]
             f6 = FListInteger.add (f6, zero);   //[0]
             f6 = FListInteger.add (f6,  zero);  //[0,0]          
@@ -117,8 +118,9 @@ public class TestFListInteger {
      */
     private void accessors (int nargs) {
         try {
+
             //testing isEmpty
-	        assertTrue("empty", FListInteger.isEmpty(f0) );
+            assertTrue("empty", FListInteger.isEmpty(f0) );
             assertFalse("nonempty", FListInteger.isEmpty(f1) );
             assertFalse("nonempty", FListInteger.isEmpty(f8) );
             
@@ -126,9 +128,9 @@ public class TestFListInteger {
             assertTrue ("f0.size()", FListInteger.size (f0) == 0);
             assertTrue ("f1.size()", FListInteger.size (f1) == 1);
             assertTrue ("f8.size()", FListInteger.size (f8) == 4);
-
             assertTrue ("f9.size()", FListInteger.size (f9) == 9);
             assertTrue ("f10.size()", FListInteger.size (f10) == 4);
+            
             //testing contains
             assertFalse ("contains01", FListInteger.contains (f0, one));
             assertFalse ("contains04", FListInteger.contains (f0, four));
@@ -182,6 +184,7 @@ public class TestFListInteger {
                 FListInteger.contains(FListInteger.set(f11,1,five),five));
         }
         catch (Exception e) {
+            //Any exceptions thrown are considered an error
             System.out.println("Exception thrown during accessors tests:");
             System.out.println(e);
             assertTrue ("accessors", false);
