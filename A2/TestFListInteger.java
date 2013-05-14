@@ -244,6 +244,10 @@ public class TestFListInteger {
                 f0.hashCode() == f0.hashCode());
             assertTrue ("hashCode44", 
                 f4.hashCode() == f4.hashCode());
+            assertTrue ("hashCode55", 
+                f5.hashCode() == f5.hashCode());
+            assertTrue ("hashCode99", 
+                f9.hashCode() == f9.hashCode());
             assertTrue ("hashCode46", 
                 FListInteger.set(f2,0,zero).hashCode() == f11.hashCode());
             assertTrue ("hashCode27", 
