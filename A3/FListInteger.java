@@ -85,7 +85,7 @@ public abstract class FListInteger {
         return new Add( f,x );
     }
 
-     /**
+    /**
      * isEmpty 
      * evaulates if FListInteger f is type Empty or Add.
      * @param FListInteger of type Empty or Add
@@ -129,7 +129,7 @@ public abstract class FListInteger {
         return f.sizeMethod();
     }
 
-     /**
+    /**
      * containsMethod
      * returns true if the Integer paramater is in the list
      * returns false if the Integer paramater is not in the list
