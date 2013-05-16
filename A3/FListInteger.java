@@ -63,7 +63,7 @@ public abstract class FListInteger {
 
     /**
      * emptyList serves as the prefered creator
-     * method for the FListInteger
+     * method for the FListIntegiser
      * Returns new empty FSet of type Empty.
      * @param --
      * @return FListInteger with no elements
