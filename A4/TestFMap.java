@@ -38,6 +38,7 @@ public class TestFMap {
         test.equality();
 
         test.summarize();
+
     }
 
     /**
@@ -84,7 +85,6 @@ public class TestFMap {
     private FMap<Integer,String> f9;// [ (1 Alice) (1 dave) ]
     private FMap<Integer,String> f10;// [ (1 dave) (1 Alice) ]
 
-    
     /**
      * A comparator for Integer values.
      */
@@ -391,7 +391,6 @@ public class TestFMap {
             assertTrue ("hashCode44", f4.hashCode() == f4.hashCode());
             assertTrue ("hashCode46", f4.hashCode() == f6.hashCode());
             assertTrue ("hashCode27", f2.hashCode() == f7.hashCode());
-            
 	}
         catch (Exception e) {
             System.out.println("Exception thrown during "

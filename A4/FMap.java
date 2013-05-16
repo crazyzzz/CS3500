@@ -15,7 +15,7 @@ public abstract class FMap<K,V> {
     abstract int sizeMethod();
     abstract boolean containsKeyMethod(K k);
     abstract V getMethod(K k);
-    abstract boolean equalsMethod(FMap m2, int size);
+    abstract boolean equalsMethod(FMap m2);
 
     public static <K,V> FMap<K,V> empty() {
         return new Empty<K,V>();
@@ -46,21 +46,17 @@ public abstract class FMap<K,V> {
     public String toString() {
         return "{...(" + sizeMethod() + " keys mapped to values)...}";
     }
-    public int hashCode() { 
-        return sizeMethod();
-    }
     public boolean equals( Object o) {
         if (o != null && o instanceof FMap) {
             FMap m2 = (FMap) o;
              if (m2.size() == this.size() ) {
-                return equalsMethod(m2, m2.size());
+                return equalsMethod(m2);
             }
         }
         return false;
     }
 
 }
-
 
 class Empty<K,V> extends FMap<K,V> {
 
@@ -81,8 +77,11 @@ class Empty<K,V> extends FMap<K,V> {
     public V getMethod(K k) {
         throw new RuntimeException("Attempted to get from empty map");
     }
-    boolean equalsMethod(FMap m2, int size) {
+    boolean equalsMethod(FMap m2) {
         return true;
+    }
+    public int hashCode() { 
+        return 0;
     }
 } 
 
@@ -123,14 +122,27 @@ class Include<K,V> extends FMap<K,V> {
         }
         return m0.get(k);
     }
-     boolean equalsMethod(FMap m2, int size) {
-        if ( m2.containsKey(k0) ) {
-            if (size != this.size() ) {
-                return true;
+    @SuppressWarnings("unchecked")
+    boolean equalsMethod(FMap m2) {
+        Include<K,V> m = this;
+        int size_m = this.size();        
+        while (size_m != 0) {
+            if (! (m2.containsKey(m.k0) && m2.get(k0) == v0) ) {
+                return false;
             }
-            return m0.equalsMethod(m2,size-1) && m2.get(k0).equals(v0);
+            size_m--;
+            if (size_m != 0) {
+                m = (Include<K,V>) m.m0;
+            }
         }
-        return false;
+        return true;   
+    }
+    public int hashCode() { 
+        int hash = m0.hashCode();
+        if ( m0.containsKey(k0) ) {
+            return hash;
+        }
+        return (hash+5) * 7 ;
     }
 } 
 
