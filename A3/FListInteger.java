@@ -175,7 +175,7 @@ public abstract class FListInteger {
         if (size_v != f2.sizeMethod()) {
             return false;
         }
-        //use i to iterate through entire list based on size of list1/list2
+        //use i to iterate through entire list based on size of list1/list2                                      
         for (int i = 0; i < size_v; i++ ) {
             if ( !(this.getMethod(i).equals( f2.getMethod(i) ) ) ) {
                 return false;

@@ -16,4 +16,4 @@ clean:
 	$(RM) *.class
 
 test:
-	java TestFListInteger
+	java TestFMap
