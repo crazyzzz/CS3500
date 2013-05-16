@@ -16,12 +16,11 @@ public abstract class FMap<K,V> {
     abstract boolean containsKeyMethod(K k);
     abstract V getMethod(K k);
 
-
-    public static FMap empty() {
-        return new Empty();
+    public static <K,V> FMap<K,V> empty() {
+        return new Empty<K,V>();
     }
-    public static FMap empty(java.util.Comparator c) {
-        return new Empty();
+    public static  <K,V> FMap<K,V> empty(java.util.Comparator c) {
+        return new Empty<K,V>();
     }
 
     public FMap<K,V> include (K k, V v) {
@@ -43,12 +42,23 @@ public abstract class FMap<K,V> {
     public V get(K k) {
         return getMethod(k);
     }
-
     public String toString() {
         return "{...(" + sizeMethod() + " keys mapped to values)...}";
     }
     public int hashCode() { 
         return sizeMethod();
+    }
+    private boolean equals(FMap m2) {
+        return true;
+    }
+    public boolean equals( Object o) {
+        if (o != null && o instanceof FMap) {
+            FMap m2 = (FMap) o;
+            if ( m2.size() == this.size() ) {
+                return equals(m2);
+            }
+        }
+        return false;
     }
 
 }
