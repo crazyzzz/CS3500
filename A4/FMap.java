@@ -15,6 +15,7 @@ public abstract class FMap<K,V> {
     abstract int sizeMethod();
     abstract boolean containsKeyMethod(K k);
     abstract V getMethod(K k);
+    abstract boolean equalsMethod(FMap m2, int size);
 
     public static <K,V> FMap<K,V> empty() {
         return new Empty<K,V>();
@@ -48,14 +49,11 @@ public abstract class FMap<K,V> {
     public int hashCode() { 
         return sizeMethod();
     }
-    private boolean equals(FMap m2) {
-        return true;
-    }
     public boolean equals( Object o) {
         if (o != null && o instanceof FMap) {
             FMap m2 = (FMap) o;
-            if ( m2.size() == this.size() ) {
-                return equals(m2);
+             if (m2.size() == this.size() ) {
+                return equalsMethod(m2, m2.size());
             }
         }
         return false;
@@ -83,7 +81,9 @@ class Empty<K,V> extends FMap<K,V> {
     public V getMethod(K k) {
         throw new RuntimeException("Attempted to get from empty map");
     }
-
+    boolean equalsMethod(FMap m2, int size) {
+        return true;
+    }
 } 
 
 class Include<K,V> extends FMap<K,V> {
@@ -122,6 +122,15 @@ class Include<K,V> extends FMap<K,V> {
             return v0;
         }
         return m0.get(k);
+    }
+     boolean equalsMethod(FMap m2, int size) {
+        if ( m2.containsKey(k0) ) {
+            if (size != this.size() ) {
+                return true;
+            }
+            return m0.equalsMethod(m2,size-1) && m2.get(k0).equals(v0);
+        }
+        return false;
     }
 } 
 
