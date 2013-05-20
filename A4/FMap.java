@@ -335,7 +335,7 @@ class Include<K,V> extends FMap<K,V> {
         //save size to be used as loop counter
         int size_m = this.size();        
         while (size_m != 0) {
-            if (! (m2.containsKey(m.k0) && m2.get(k0) == v0) ) {
+            if (! (m2.containsKey(m.k0) && m2.get(k0).equals( v0 )) ) {
                 return false;
             }
             size_m--;
