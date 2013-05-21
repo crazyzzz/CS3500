@@ -13,10 +13,9 @@
  * Class FMat provides framework for an ADT map.
 */
 
-import java.util.Iterator;
-import java.lang.Iterable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 public abstract class FMap<K,V> implements Iterable<K> { 
 
@@ -198,18 +197,19 @@ class FIterator<K>  implements Iterator<K> {
     @SuppressWarnings("unchecked")
     public ArrayList<K> addTo(FMap m) {
         Include i;
-        ArrayList<K> keys = new ArrayList<K>();
+        ArrayList<K> keysList = new ArrayList<K>();
         while (!m.isEmpty()) {
             i = (Include) m;    
             if ( !i.m0.containsKey(i.k0) ) {
-                keys.add((K)i.k0);
+                keysList.add((K)i.k0);
             }
             m = i.m0;
         }
-        return keys;
+        return keysList;
     }
     public void remove() {
-        throw new UnsupportedOperationException("UnsupportedOperationException");
+        throw new 
+            UnsupportedOperationException("UnsupportedOperationException");
     }     
 }
 
