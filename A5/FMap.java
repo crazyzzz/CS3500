@@ -1,5 +1,5 @@
 /**
- * Assignment 4 - FMap.
+ * Assignment 5 - FMap.
  * @author Kevin Langer
  * klanger@ccs.neu.edu
  *
@@ -7,16 +7,21 @@
  * data types. Three classes: abstract class FMap
  * and Empty and Include which serve as the basic
  * creators for FMap.
+ * An itterator is added to transverse this map.
  */
 
 /**
- * Class FMat provides framework for an ADT map.
-*/
-
+ * ArrayList is the backbone of itterator
+ * collections is used to sort the arrayList
+ * Iterator is used to implement next, hasNext, and remove
+ */
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * Class FMat provides framework for an ADT map.
+*/
 public abstract class FMap<K,V> implements Iterable<K> { 
 
     
@@ -56,10 +61,22 @@ public abstract class FMap<K,V> implements Iterable<K> {
      */
     abstract boolean equalsMethod(FMap m2);
 
+    /** 
+     * iterator
+     * gets a new instance of iterator for the map
+     * @param --
+     * @return Iterator<K> that can itterate through the map
+     */
     public Iterator<K> iterator() {
         return new FIterator<K>(this);
     }        
 
+     /** 
+     * iterator
+     * gets a new instance of iterator for the map
+     * @param ava.util.Comparator<? super K> c collection to be used as sort
+     * @return Iterator<K> that can iterate through the map, sorted by c
+     */
     public Iterator<K> iterator(java.util.Comparator<? super K> c) {
         return new FIterator<K>(this,c);
     }        
@@ -170,32 +187,83 @@ public abstract class FMap<K,V> implements Iterable<K> {
     }
 
 }
+
+/**
+ * Class FIterator<K> provides support for an FMap iterator
+*/
 class FIterator<K>  implements Iterator<K> {
 
+    /*
+     * m0 is a reference to the current FMap
+     * c is an optional comparator used to sort
+     * keysList is the arrayList used to store the itterable keys
+     * keysIt is the itterator of the arrayList that provides support for next
+     * and hasNext
+     */    
     FMap m0;
     java.util.Comparator<? super K> c;
     ArrayList<K> keysList;
     Iterator<K> keysIt;
 
+    /*
+     * constructor for FIterator which constructs the arrayList and
+     * stores the map.
+     * @param FMap of current map to construct itterator from
+     * @return --
+     */
     FIterator(FMap m0) {
         this.m0 = m0;
         keysList = addTo(m0);
         keysIt = keysList.iterator();
     }
+
+    /* 
+     * additonal constructor which calls previous constructor and 
+     * then uses the comparator to sort the keys.
+     * @param FMap of current map to construct itterator from
+     * @param Comparator for which to sort by
+     * @return --
+     */
     FIterator(FMap m0, java.util.Comparator<? super K> c) {
         this(m0);
         this.c = c;
         Collections.sort(keysList,c);
     }
+    
+    /*
+     * hasNext
+     * returns if the ArrayList has more elements.
+     * uses the arrayList itterator to do so.
+     * @param --
+     * boolean indicating if there are more element
+     */
     public boolean hasNext() {
         return keysIt.hasNext(); 
     }
+
+    /* 
+     * next
+     * get the next key from the arrayList's itterator
+     * throws exception if !hasNext()=true
+     * @param --
+     * @return K of the next key 
+     */
     public K next() {
         return keysIt.next();
     }
 
+    //Warnings from unchecked cast in containsKey call
     @SuppressWarnings("unchecked")
-    public ArrayList<K> addTo(FMap m) {
+
+     /* 
+     * addTo
+     * heper method to fill the arrayList. Only
+     * called by the constructor. only adds keys
+     * once.
+     * @param FMap to construct arrayList from
+     * @return ArrayList<K> new and filled arrayList of unique keys
+     */
+    private ArrayList<K> addTo(FMap m) {
         Include i;
         ArrayList<K> keysList = new ArrayList<K>();
         while (!m.isEmpty()) {
@@ -207,6 +275,14 @@ class FIterator<K>  implements Iterator<K> {
         }
         return keysList;
     }
+
+    /* 
+     * remove
+     * unsuppoted method
+     * has no effects and throws exception
+     * @param --
+     * @return --
+     */
     public void remove() {
         throw new 
             UnsupportedOperationException("UnsupportedOperationException");
@@ -386,6 +462,7 @@ class Include<K,V> extends FMap<K,V> {
      * @return boolean indicating if the maps are equal
      */
     boolean equalsMethod(FMap m2) {
+        //K k is returned by this's itterator
         for (K k : this ) {
             if (! (m2.containsKey(k) && this.get(k).equals(m2.get(k))) ) {
                 return false;
@@ -411,7 +488,7 @@ class Include<K,V> extends FMap<K,V> {
         if ( m0.containsKey(k0) ) {
             return hash;
         }
-        return (hash+5) * 7 ;
+        return (hash+5) * 7;
     }
 } 
 
