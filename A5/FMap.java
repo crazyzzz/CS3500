@@ -18,7 +18,7 @@ import java.lang.Iterable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public abstract class FMap<K,V> { 
+public abstract class FMap<K,V> implements Iterable<K> { 
 
     
     /** 
@@ -58,11 +58,11 @@ public abstract class FMap<K,V> {
     abstract boolean equalsMethod(FMap m2);
 
     public Iterator<K> iterator() {
-        return new FIterator(this);
+        return new FIterator<K>(this);
     }        
 
     public Iterator<K> iterator(java.util.Comparator<? super K> c) {
-        return new FIterator(this,c);
+        return new FIterator<K>(this,c);
     }        
 
     /**
@@ -171,31 +171,31 @@ public abstract class FMap<K,V> {
     }
 
 }
-class FIterator<K>  implements Iterator {
+class FIterator<K>  implements Iterator<K> {
 
     FMap m0;
     java.util.Comparator<? super K> c;
     ArrayList<K> keysList;
-    Iterator<K> listIt;
+    Iterator<K> keysIt;
 
     FIterator(FMap m0) {
         this.m0 = m0;
         keysList = addTo(m0);
-        listIt = keysList.iterator();
+        keysIt = keysList.iterator();
     }
     FIterator(FMap m0, java.util.Comparator<? super K> c) {
-        this.m0 = m0;
+        this(m0);
         this.c = c;
-        keysList = addTo(m0);
-        listIt = keysList.iterator();
         Collections.sort(keysList,c);
     }
     public boolean hasNext() {
-        return listIt.hasNext(); 
+        return keysIt.hasNext(); 
     }
     public K next() {
-        return listIt.next();
+        return keysIt.next();
     }
+
+    @SuppressWarnings("unchecked")
     public ArrayList<K> addTo(FMap m) {
         Include i;
         ArrayList<K> keys = new ArrayList<K>();
@@ -209,7 +209,7 @@ class FIterator<K>  implements Iterator {
         return keys;
     }
     public void remove() {
-        throw new RuntimeException("UnsupportedOperationException");
+        throw new UnsupportedOperationException("UnsupportedOperationException");
     }     
 }
 
@@ -386,20 +386,12 @@ class Include<K,V> extends FMap<K,V> {
      * @return boolean indicating if the maps are equal
      */
     boolean equalsMethod(FMap m2) {
-        //save variable m to be used for back itteration of the FMap
-        Include<K,V> m = this;
-        //save size to be used as loop counter
-        int size_m = this.size();        
-        while (size_m != 0) {
-            if (! (m2.containsKey(m.k0) && m2.get(k0).equals( v0 )) ) {
+        for (K k : this ) {
+            if (! (m2.containsKey(k) && this.get(k).equals(m2.get(k))) ) {
                 return false;
             }
-            size_m--;
-            if (size_m != 0) {
-                m = (Include<K,V>) m.m0;
-            }
         }
-        return true;   
+        return true;
     }
     
     /* 
