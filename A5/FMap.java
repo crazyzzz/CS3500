@@ -378,7 +378,7 @@ class Include<K,V> extends FMap<K,V> {
     FMap<K,V> m0;
     K k0;
     V v0;
-
+    private int size;
     /**
      * Include constructor for FMap to add values
      * to the list. Include is the only way to change 
@@ -392,6 +392,10 @@ class Include<K,V> extends FMap<K,V> {
         this.m0 = m0;
         this.k0 = k0;
         this.v0 = v0;
+        size = m0.size();
+        if (!m0.containsKey(k0)) {
+            size++;
+        }
     }
 
     /**
@@ -410,11 +414,7 @@ class Include<K,V> extends FMap<K,V> {
      * @return int representing the size of the FMap
      */
     public int sizeMethod() {
-        int size_m = m0.size();
-        if ( m0.containsKey(k0) ) {
-            return size_m;
-        }
-        return size_m + 1;
+        return size;
     }
     
     /**
