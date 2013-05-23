@@ -530,7 +530,7 @@ abstract class BST<K,V> extends FMap<K,V> {
     }
     @SuppressWarnings("unchecked")
     private ArrayList<K> traverse(FMap m, ArrayList<K> keysList) {
-        if (this.isEmpty()) {
+        if (m.isEmpty()) {
             return keysList;
         }
         BST_Include i = (BST_Include) m;
