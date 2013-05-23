@@ -24,6 +24,12 @@ import java.util.Iterator;
 */
 public abstract class FMap<K,V> implements Iterable<K> { 
 
+    /** 
+     * include
+     * @param K key
+     * @param V value
+     * @return FMap<K,V> of implementation specific FMAp
+     */
     abstract FMap<K,V> include (K k, V v);
 
     /** 
@@ -62,7 +68,13 @@ public abstract class FMap<K,V> implements Iterable<K> {
      */
     abstract boolean equalsMethod(FMap m2);
 
-    abstract ArrayList<K> addTo(FMap m);
+    /**
+     * addAllKeys
+     * creats and returns an ArrayList of all unique keyvalues in FMap m
+     * @param FMap to get keys from
+     * @return ArrayList<k> containing all keys, no order expected.
+     */ 
+    abstract ArrayList<K> addAllKeys(FMap m);
 
     /** 
      * iterator
@@ -193,20 +205,25 @@ public abstract class FMap<K,V> implements Iterable<K> {
         return hash;
     }
 }
+
+/**
+ * Class FMapL encapsulates all non-comparator FMaps
+ */
 abstract class FMapL<K,V> extends FMap<K,V> {
 
     //Warnings from unchecked cast in containsKey call
     @SuppressWarnings("unchecked")
 
     /* 
-     * addTo
-     * heper method to fill the arrayList. Only
+     * addAllKeys
+     * heper method to fill the ArrayList<K>. Only
      * called by the constructor. only adds keys
      * once.
      * @param FMap to construct arrayList from
      * @return ArrayList<K> new and filled arrayList of unique keys
      */
-    ArrayList<K> addTo(FMap m) {
+    ArrayList<K> addAllKeys(FMap m) {
+        //Parse variable for non-empty FMaps to Includes
         Include i;
         ArrayList<K> keysList = new ArrayList<K>();
         while (!m.isEmpty()) {
@@ -233,6 +250,7 @@ abstract class FMapL<K,V> extends FMap<K,V> {
         return new Include<K,V>(this, k,v);
     }
 }
+
 /**
  * Class FIterator<K> provides support for an FMap iterator
 */
@@ -259,7 +277,7 @@ class FIterator<K>  implements Iterator<K> {
     @SuppressWarnings("unchecked")
     FIterator(FMap m0) {
         this.m0 = m0;
-        keysList = m0.addTo(m0);
+        keysList = m0.addAllKeys(m0);
         keysIt = keysList.iterator();
     }
 
@@ -327,7 +345,7 @@ class Empty<K,V> extends FMapL<K,V> {
      * @param --
      * @return boolean true boolean indicating that map is empty
      */
-    public boolean isEmptyMethod() {
+    boolean isEmptyMethod() {
         return true;
     }
     
@@ -337,7 +355,7 @@ class Empty<K,V> extends FMapL<K,V> {
      * @param --
      * @return int with value zero
      */
-    public int sizeMethod() {
+    int sizeMethod() {
         return 0;
     }
     
@@ -347,7 +365,7 @@ class Empty<K,V> extends FMapL<K,V> {
      * @param --
      * @return boolean value of false indiciating no keys.
      */
-    public boolean containsKeyMethod(K k) {
+    boolean containsKeyMethod(K k) {
         return false;
     }
     
@@ -358,7 +376,7 @@ class Empty<K,V> extends FMapL<K,V> {
      * @param --
      * @return --
      */
-    public V getMethod(K k) {
+    V getMethod(K k) {
         throw new RuntimeException("Attempted to get from empty map");
     }
 
@@ -416,7 +434,7 @@ class Include<K,V> extends FMapL<K,V> {
      * @param --
      * @return boolean set to false indiciating FMap has values.
      */
-    public boolean isEmptyMethod() {
+    boolean isEmptyMethod() {
         return false;
     }
 
@@ -426,7 +444,7 @@ class Include<K,V> extends FMapL<K,V> {
      * @param --
      * @return int representing the size of the FMap
      */
-    public int sizeMethod() {
+    int sizeMethod() {
         return size;
     }
     
@@ -437,7 +455,7 @@ class Include<K,V> extends FMapL<K,V> {
      * @param K key to check for
      * @return boolean value indiciating if key was found.
      */
-    public boolean containsKeyMethod(K k) {
+    boolean containsKeyMethod(K k) {
         if ( k.equals(k0) ) {
             return true;
         }   
@@ -485,17 +503,47 @@ class Include<K,V> extends FMapL<K,V> {
     }
     
 } 
-abstract class BST<K,V> extends FMap<K,V> {
-    abstract BST<K,V> includeMethod(K k, V v); 
 
+/**
+ * Class BST encapsulates all comparator FMaps
+ * implements binary search trees to improve FMap preformance.
+ */
+abstract class BST<K,V> extends FMap<K,V> {
+
+    /*
+     * includeMethod
+     * returns a binary search tree where the key value
+     * pair is gaurnteed to be added to maintain BST structure
+     * @param K key
+     * @param V value
+     * @return BST with key and value correctly added
+     */
+    abstract BST<K,V> includeMethod(K k, V v); 
+    
+    //Both BST_Empty and BST_Include must support a comparator
     java.util.Comparator<? super K> c;
 
+     /*
+     * include
+     * wrapper for includeMethod to implement FMap's include
+     * @param K key
+     * @param V value
+     * @return BST with key and value correctly added
+     */
     public FMap<K,V> include(K k, V v) {
         return includeMethod(k,v);
     }
     
+    //Needed for uncheck cast of K while adding to ArrayList
     @SuppressWarnings("unchecked")
-    ArrayList<K> addTo(FMap m) {
+
+     /**
+     * addAllKeys
+     * creats and returns an ArrayList of all unique keyvalues in FMap m
+     * @param FMap to get keys from
+     * @return ArrayList<k> containing all keys, no order expected.
+     */
+    ArrayList<K> addAllKeys(FMap m) {
         ArrayList<K> keysList = new ArrayList<K>();
         if (!this.isEmpty()) {
             BST_Include i = (BST_Include) m;
@@ -503,12 +551,25 @@ abstract class BST<K,V> extends FMap<K,V> {
         }
         return traverse(m,keysList);
     }
+
+    //Needed for uncheck cast of K while adding to ArrayList
     @SuppressWarnings("unchecked")
+
+    /**
+     * traverse
+     * implements inorder traversal while adding keys to the ArrayList
+     * @param FMap which keys are added from
+     * @param ArrayList<K> which keys are added to
+     * @return ArrayList<k> of completed ArrayList<K> containing all keys
+     */
     private ArrayList<K> traverse(FMap m, ArrayList<K> keysList) {
+        //end when a empty branch is reached
         if (m.isEmpty()) {
             return keysList;
         }
+        //non-empty elements are cast
         BST_Include i = (BST_Include) m;
+        //Add non-empty elements to the ArrayList<K>
         if( !i.right.isEmpty() ) {
             BST_Include ir = (BST_Include)i.right;
             keysList.add((K)ir.k0);
@@ -517,24 +578,58 @@ abstract class BST<K,V> extends FMap<K,V> {
             BST_Include il = (BST_Include)i.left;
             keysList.add((K)il.k0);
         }
+        //Travse tree in-order
         traverse(i.right,keysList);
         traverse(i.left,keysList);
         return keysList;
     }
+    
+    //Needed as BST_Include does not return a BST but rather a BST_Include
     @SuppressWarnings("unchecked")
+
+    /**
+     * node
+     * Factory method for BST_Include
+     * @param K key
+     * @param V value
+     * @return FMap new with correct structure and inserted key and value
+     */
     BST<K,V> node(K k, V v, 
         BST<K,V> left, BST<K,V> right, java.util.Comparator<? super K> c) {
         return new BST_Include( k, v, left, right, c);
     } 
 }
 
+/**
+ * Class BST_Include is a basic creator of BST and used to add elements.
+ * implements binary search trees to improve FMap preformance.
+ */
 class BST_Include<K,V> extends BST<K,V> {
 
+    /*
+     * right is the right subtree, can be empty
+     * left is the left subtree, can be emty
+     * k0 is the key at node
+     * v0 is the value at node
+     * size is the cached size of the tree
+     */ 
     BST<K,V> right;
     BST<K,V> left;
     K k0;
     V v0;
     int size;
+
+    /* 
+     * BST_Include
+     * constructor that simply adds an element and updates size. 
+     * BST_Include is NOT a client method and should not used as such.
+     * @param K key
+     * @param V value
+     * @param left subtree, can be empty
+     * @param right subtree, can be empty
+     * @param Comparator<? super K> used to determine ordering
+     * @return BST_Include a tree with updated key and value.
+     */
     BST_Include(K k, V v, 
         BST<K,V> left, BST<K,V> right, java.util.Comparator<? super K> c) {
         
@@ -548,32 +643,70 @@ class BST_Include<K,V> extends BST<K,V> {
         this.left = left;
         this.c = c;
     }
-    public BST<K,V> includeMethod (K k, V v) {
+
+    /*
+     * includeMethod
+     * correctly inserts new node into a tree.
+     * duplicates are not added, newest value is kept.
+     * @param K key
+     * @param V value
+     * @return BST<K,V> updated tree
+     */
+    BST<K,V> includeMethod (K k, V v) {
         if ( c.compare(k,k0) < 0 ) {
-            return node( 
-                    k0, v0, left.includeMethod(k,v), right, c);
+            return node( k0, v0, left.includeMethod(k,v), right, c);
         }
         if ( c.compare(k,k0) > 0 ) {
             return node( k0, v0, left, right.includeMethod(k,v), c);
         }
         return node( k0, v, left, right, c);
     }    
-    public boolean isEmptyMethod() {
+
+    /*
+     * isEmptymethod
+     * tree with nodes is not empty
+     * @param --
+     * @return boolean
+     */
+    boolean isEmptyMethod() {
         return false;
-    }
-    public int sizeMethod() {      
+    } 
+
+    /*
+     * sizeMethod
+     * number of unique elements in FMap
+     * @param --
+     * @return int 
+     */
+    int sizeMethod() {      
         return size;
     }
-    public boolean containsKeyMethod(K k) {
+
+    /* 
+     * containsKeyMethod
+     * returns true if the key is in the FMap
+     * checks all non-empty subtrees
+     * @param K key 
+     * @param boolean indiciating if it is contained
+     */
+    boolean containsKeyMethod(K k) {
         if ( c.compare(k,k0) < 0) {
-            return left.containsKeyMethod(k);
+            return left.containsKey(k);
         }
         if ( c.compare(k,k0) > 0) {
-            return right.containsKeyMethod(k);
+            return right.containsKey(k);
         }
         return k.equals(k0);
     }
-    public V getMethod(K k) {
+    
+    /* 
+     * getMethod
+     * returns value at specified key
+     * checks all non-empty subtrees for key
+     * @param K key
+     * @param V value
+     */
+    V getMethod(K k) {
         if ( c.compare(k,k0) == 0 ) {
             return v0;
         } else if ( c.compare(k,k0) > 0 ) {
@@ -581,8 +714,21 @@ class BST_Include<K,V> extends BST<K,V> {
         }
         return left.get(k);
     }
+
+    //Needed for passing K to containsKey
     @SuppressWarnings("unchecked")
-    public boolean equalsMethod(FMap m2) {
+
+     /**
+     * Itterate through list by size, with the knowlege that 
+     * newest key values are the only relevant ones (do not
+     * check shadow keys). If contains key and the value at
+     * that key is equal to that of m2, for all values then
+     * the two maps are equal. Requires parsing to includes
+     * to get k0 and v0 information.
+     * @param FMap to be tested, note size is already checked
+     * @return boolean indicating if the maps are equal
+     */
+    boolean equalsMethod(FMap m2) {
         //K k is returned by this's itterator
         for (K k : this ) {
             if (! (m2.containsKey(k) && this.get(k).equals(m2.get(k))) ) {
@@ -593,27 +739,84 @@ class BST_Include<K,V> extends BST<K,V> {
     }
 }
 
+/**
+ * Class BST_Empty is a basic creator of BST and used to represent an
+ * empty subtree.
+ * implements binary search trees to improve FMap preformance.
+ */
 class BST_Empty<K,V> extends BST<K,V> {
-
+    
+     /* 
+     * BST_Empty
+     * constructor that returns a tree with no elements. 
+     * BST_Empty is used as the basic creator of the tree.
+     * @param Comparator<? super K> used to determine ordering
+     * @return BST_Empty an empty tree.
+     */
     BST_Empty(java.util.Comparator<? super K> c) {
         this.c = c;
     }   
-    public BST<K,V> includeMethod (K k, V v) {
+
+    /*
+     * includeMethod
+     * can always add a key and value to an empty FMap
+     * @param K key
+     * @param V value
+     * @return BST<K,V> of tree containing only a root
+     */
+    BST<K,V> includeMethod (K k, V v) {
         return node(k,v,this,this,this.c);
     }
-    public boolean isEmptyMethod() {
+
+    /*
+     * isEmptymethod
+     * tree with no-nodes is empty
+     * @param --
+     * @return boolean
+     */
+    boolean isEmptyMethod() {
         return true;
     }
-    public int sizeMethod() {
+
+     /*
+     * sizeMethod
+     * number of unique keys in FMap
+     * @param --
+     * @return int with value 0, as empty FMaps have no keys
+     */
+    int sizeMethod() {
         return 0;
     }
-    public boolean containsKeyMethod(K k) {
+
+    /* 
+     * containsKeyMethod
+     * all subtrees of empty are empty subtrees
+     * @param K key 
+     * @param boolean indiciating that the key is not in empty tree
+     */
+    boolean containsKeyMethod(K k) {
         return false;
     }
-    public V getMethod(K k) {
-        throw new RuntimeException("Attempted to get from empty map");
+
+    /* 
+     * getMethod
+     * throws an exception as no keys are contains in an empty FMap
+     * @param K key
+     * @param V value
+     */
+    V getMethod(K k) {
+        throw new RuntimeException("Key not found");
     }
-    public boolean equalsMethod(FMap m2) {
+
+    /**
+     * equalsMethod
+     * At this method the size of the paramater and the parent
+     * have been compared and determined to be the same. As
+     * a result, it will always be true.
+     * @param FMap map to compare
+     * @return boolean indicating that the maps are equal
+     */
+    boolean equalsMethod(FMap m2) {
         return true;
     }
 }

@@ -835,6 +835,15 @@ public class TestFMap {
             assertTrue ("hashCode44", f4.hashCode() == f4.hashCode());
             assertTrue ("hashCode46", f4.hashCode() == f6.hashCode());
             assertTrue ("hashCode27", f2.hashCode() == f7.hashCode());
+	    assertTrue("hashCode_equalsReverseIntegerComparator", 
+                       FMap.empty().include(1,"test").hashCode() ==
+                       FMap.empty(reverseIntegerComparator)
+		       .include(1,"test").hashCode());
+            assertTrue("hashCode_equalsReverseIntegerComparator2", 
+                       FMap.empty().include(2,"two").include(1,"test")
+		       .hashCode() ==
+                       FMap.empty(reverseIntegerComparator)
+		       .include(1,"test").include(2,"two").hashCode());
         }
         catch (Exception e) {
             System.out.println("Exception thrown during "
