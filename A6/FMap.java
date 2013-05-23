@@ -165,7 +165,7 @@ public abstract class FMap<K,V> implements Iterable<K> {
      * @return boolean
      */    
     public boolean equals( Object o) {
-        if (o != null && o instanceof FMapL) {
+        if (o != null && o instanceof FMap) {
             FMap m2 = (FMap) o;
              if (m2.size() == this.size() ) {
                 return equalsMethod(m2);
@@ -557,10 +557,10 @@ class BST_Include<K,V> extends BST<K,V> {
     @SuppressWarnings("unchecked")
     public BST<K,V> includeMethod (K k, V v) {
         if ( c.compare(k,k0) < 0 ) {
-            return new BST_Include( k0, v, left.includeMethod(k,v), right, c);
+            return new BST_Include( k0, v0, left.includeMethod(k,v), right, c);
         }
         if ( c.compare(k,k0) > 0 ) {
-            return new BST_Include( k0, v, left, right.includeMethod(k,v), c);
+            return new BST_Include( k0, v0, left, right.includeMethod(k,v), c);
         }
         size--;
         return new BST_Include( k0, v, left, right, c);
