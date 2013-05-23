@@ -1,5 +1,5 @@
 /**
- * Assignment 5 - FMap.
+ * Assignment 6 - FMap.
  * @author Kevin Langer
  * klanger@ccs.neu.edu
  *
@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 /**
- * Class FMat provides framework for an ADT map.
+ * Class FMap provides framework for an ADT map.
 */
 public abstract class FMap<K,V> implements Iterable<K> { 
 
