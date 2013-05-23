@@ -1,0 +1,47 @@
+BST - Binary Search Tree
+
+1) Empty
+
+2) Node
+    -Label
+    -left labels < label root
+    -right labels > label root
+
+empty: Comparator<? super K> -> BST
+node: K x V x BST x BST -> BST 
+isEmpty: -- -> boolean
+isLeaf: -- -> boolean
+insert: K x V -> BST
+size: -- -> int
+get: K -> V
+containsKey: K -> boolean
+getLeft: -> BST<K,V>
+getRight: -> BST<K,V>
+
+BST.empty(c).isEmpty() = true
+BST.node(k0,v0,left,right,c).isEmpty = false
+
+BST.node(k0,v0,left,right,c).isLeaf() 
+    = left.isEmpty() && right.isEmpty()
+
+BST.empty(c).insert(k,v) 
+    = BST.node(k,v,BST.empty(c), BST.empty(c), c)
+
+BST.node(k0,v0,left,right,c).insert(k,v) 
+    = BST.node(k0,v,left, right,c)
+        if ( c.compare(k,k0) == 0 )
+    = BST.node(k0,v0,left.insert(k,v), right,c )
+        if ( c.compare(k,k0) < 0 )
+    = BST.node(k0,v0,left, right.insert(k,v),c) ,c )
+        if ( c.compare(k,k0) > 0 )
+
+BST.empty(c).size() 
+    = 0
+
+BST.node(k0,v0,left,right,c).size()
+    = 1 + left.size() + right.size()
+
+if c.compare(k,k0) == 0
+    =left.containsKey(k)
+if c.compare(k,k0) < 0
+    = right.containsKey(k)
