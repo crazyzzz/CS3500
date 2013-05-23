@@ -1,4 +1,5 @@
 JFLAGS = -g
+JDEBUG = -Xlint
 JC = javac
 .SUFFIXES: .java .class
 .java.class:
@@ -12,8 +13,10 @@ default: classes
 
 classes: $(CLASSES:.java=.class)
 
+
 clean: 
 	$(RM) *.class
 
 test:
 	java TestFMap
+

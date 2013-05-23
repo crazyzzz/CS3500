@@ -173,6 +173,25 @@ public abstract class FMap<K,V> implements Iterable<K> {
         }
         return false;
     }
+    /* 
+     * hashCode
+     * Iterate through map and sum the map indexes 
+     * making sure to multiply old elements before adding
+     * them to make the values place dependant in the 
+     * list. Offset the values such that values for zero
+     * will be different than having no values. Multiplication
+     * immediate values chosen semi-arbitrarily and will likely
+     * need adjusting to reduce collisions. 
+     * @param --
+     * @return int where m1.equals(lm) then hashCode(m1) == hashCode(m2)
+    */
+    public int hashCode() { 
+        int hash = 0;
+        for (K k : this) {
+            hash += k.hashCode() + this.get(k).hashCode();
+        }
+        return hash;
+    }
 }
 abstract class FMapL<K,V> extends FMap<K,V> {
 
@@ -237,6 +256,7 @@ class FIterator<K>  implements Iterator<K> {
      * @param FMap of current map to construct itterator from
      * @return --
      */
+    @SuppressWarnings("unchecked")
     FIterator(FMap m0) {
         this.m0 = m0;
         keysList = m0.addTo(m0);
@@ -354,15 +374,6 @@ class Empty<K,V> extends FMapL<K,V> {
         return true;
     }
     
-    /** 
-     * An empty map has no values to generate hashs from
-     * as a result, return same hash for all empty maps
-     * @param --
-     * @return int hash value
-     */
-    public int hashCode() { 
-        return -1;
-    }
 } 
 
 /**
@@ -473,42 +484,16 @@ class Include<K,V> extends FMapL<K,V> {
         return true;
     }
     
-    /* 
-     * hashCode
-     * Iterate through map and sum the map indexes 
-     * making sure to multiply old elements before adding
-     * them to make the values place dependant in the 
-     * list. Offset the values such that values for zero
-     * will be different than having no values. Multiplication
-     * immediate values chosen semi-arbitrarily and will likely
-     * need adjusting to reduce collisions. 
-     * @param --
-     * @return int where m1.equals(lm) then hashCode(m1) == hashCode(m2)
-    */
-    public int hashCode() { 
-        int hash = m0.hashCode();
-        if ( m0.containsKey(k0) ) {
-            return hash;
-        }
-        return (hash+5) * 7;
-    }
 } 
 abstract class BST<K,V> extends FMap<K,V> {
-    abstract boolean isLeafMethod();
-    abstract BST includeMethod(K k, V v); 
+    abstract BST<K,V> includeMethod(K k, V v); 
 
     java.util.Comparator<? super K> c;
-    
-    public boolean isLeaf() {
-        return isLeafMethod();
-    }
 
-    public FMap include(K k, V v) {
+    public FMap<K,V> include(K k, V v) {
         return includeMethod(k,v);
     }
-    public int hashCode() { 
-        return size();
-    }
+    
     @SuppressWarnings("unchecked")
     ArrayList<K> addTo(FMap m) {
         ArrayList<K> keysList = new ArrayList<K>();
@@ -536,6 +521,11 @@ abstract class BST<K,V> extends FMap<K,V> {
         traverse(i.left,keysList);
         return keysList;
     }
+    @SuppressWarnings("unchecked")
+    BST<K,V> node(K k, V v, 
+        BST<K,V> left, BST<K,V> right, java.util.Comparator<? super K> c) {
+        return new BST_Include( k, v, left, right, c);
+    } 
 }
 
 class BST_Include<K,V> extends BST<K,V> {
@@ -547,28 +537,31 @@ class BST_Include<K,V> extends BST<K,V> {
     int size;
     BST_Include(K k, V v, 
         BST<K,V> left, BST<K,V> right, java.util.Comparator<? super K> c) {
+        
+        size = right.size() + left.size();        
+        if(!right.containsKey(k) && !right.containsKey(k)) {
+            size+=1;
+        }
         k0 = k;
         v0 = v;
         this.right = right;
         this.left = left;
         this.c = c;
-        size = right.size() + left.size() + 1;
     }
-    @SuppressWarnings("unchecked")
     public BST<K,V> includeMethod (K k, V v) {
         if ( c.compare(k,k0) < 0 ) {
-            return new BST_Include( k0, v0, left.includeMethod(k,v), right, c);
+            return node( 
+                    k0, v0, left.includeMethod(k,v), right, c);
         }
         if ( c.compare(k,k0) > 0 ) {
-            return new BST_Include( k0, v0, left, right.includeMethod(k,v), c);
+            return node( k0, v0, left, right.includeMethod(k,v), c);
         }
-        size--;
-        return new BST_Include( k0, v, left, right, c);
+        return node( k0, v, left, right, c);
     }    
     public boolean isEmptyMethod() {
         return false;
     }
-    public int sizeMethod() {
+    public int sizeMethod() {      
         return size;
     }
     public boolean containsKeyMethod(K k) {
@@ -581,13 +574,12 @@ class BST_Include<K,V> extends BST<K,V> {
         return k.equals(k0);
     }
     public V getMethod(K k) {
-        if ( k.equals(k0) ) {
+        if ( c.compare(k,k0) == 0 ) {
             return v0;
         } else if ( c.compare(k,k0) > 0 ) {
             return right.get(k);
-        } else {
-            return left.get(k);
         }
+        return left.get(k);
     }
     @SuppressWarnings("unchecked")
     public boolean equalsMethod(FMap m2) {
@@ -599,9 +591,6 @@ class BST_Include<K,V> extends BST<K,V> {
         }
         return true;   
     }
-    public boolean isLeafMethod() {
-        return left.isEmpty() && right.isEmpty();
-    }
 }
 
 class BST_Empty<K,V> extends BST<K,V> {
@@ -610,7 +599,7 @@ class BST_Empty<K,V> extends BST<K,V> {
         this.c = c;
     }   
     public BST<K,V> includeMethod (K k, V v) {
-        return new BST_Include<K,V>(k,v,this,this,this.c);
+        return node(k,v,this,this,this.c);
     }
     public boolean isEmptyMethod() {
         return true;
@@ -627,8 +616,4 @@ class BST_Empty<K,V> extends BST<K,V> {
     public boolean equalsMethod(FMap m2) {
         return true;
     }
-    public boolean isLeafMethod() {
-        return true;
-    }
 }
-
