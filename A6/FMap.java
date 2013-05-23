@@ -198,6 +198,7 @@ public abstract class FMap<K,V> implements Iterable<K> {
      * @return int where m1.equals(lm) then hashCode(m1) == hashCode(m2)
     */
     public int hashCode() { 
+        //Variable for summing hash
         int hash = 0;
         for (K k : this) {
             hash += k.hashCode()*5 + this.get(k).hashCode()*7;
