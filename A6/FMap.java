@@ -62,6 +62,8 @@ public abstract class FMap<K,V> implements Iterable<K> {
      */
     abstract boolean equalsMethod(FMap m2);
 
+    abstract ArrayList<K> addTo(FMap m);
+
     /** 
      * iterator
      * gets a new instance of iterator for the map
@@ -174,6 +176,30 @@ public abstract class FMap<K,V> implements Iterable<K> {
 }
 abstract class FMapL<K,V> extends FMap<K,V> {
 
+    //Warnings from unchecked cast in containsKey call
+    @SuppressWarnings("unchecked")
+
+    /* 
+     * addTo
+     * heper method to fill the arrayList. Only
+     * called by the constructor. only adds keys
+     * once.
+     * @param FMap to construct arrayList from
+     * @return ArrayList<K> new and filled arrayList of unique keys
+     */
+    ArrayList<K> addTo(FMap m) {
+        Include i;
+        ArrayList<K> keysList = new ArrayList<K>();
+        while (!m.isEmpty()) {
+            i = (Include) m;    
+            if ( !i.m0.containsKey(i.k0) ) {
+                keysList.add((K)i.k0);
+            }
+            m = i.m0;
+        }
+        return keysList;
+    }
+
      /**
      * include serves as a creator
      * method for the FMap and adds 
@@ -213,7 +239,7 @@ class FIterator<K>  implements Iterator<K> {
      */
     FIterator(FMap m0) {
         this.m0 = m0;
-        keysList = addTo(m0);
+        keysList = m0.addTo(m0);
         keysIt = keysList.iterator();
     }
 
@@ -250,30 +276,6 @@ class FIterator<K>  implements Iterator<K> {
      */
     public K next() {
         return keysIt.next();
-    }
-
-    //Warnings from unchecked cast in containsKey call
-    @SuppressWarnings("unchecked")
-
-    /* 
-     * addTo
-     * heper method to fill the arrayList. Only
-     * called by the constructor. only adds keys
-     * once.
-     * @param FMap to construct arrayList from
-     * @return ArrayList<K> new and filled arrayList of unique keys
-     */
-    private ArrayList<K> addTo(FMap m) {
-        Include i;
-        ArrayList<K> keysList = new ArrayList<K>();
-        while (!m.isEmpty()) {
-            i = (Include) m;    
-            if ( !i.m0.containsKey(i.k0) ) {
-                keysList.add((K)i.k0);
-            }
-            m = i.m0;
-        }
-        return keysList;
     }
 
     /* 
@@ -494,6 +496,11 @@ class Include<K,V> extends FMapL<K,V> {
 abstract class BST<K,V> extends FMap<K,V> {
     abstract boolean isLeafMethod();
     java.util.Comparator<? super K> c;
+    
+    public boolean isLeaf() {
+        return isLeafMethod();
+    }
+
     @SuppressWarnings("unchecked")
     public BST<K,V> include (K k, V v) {
         if (this.isEmpty()) {
@@ -509,12 +516,40 @@ abstract class BST<K,V> extends FMap<K,V> {
         m0.size--;
         return new BST_Include( m0.k0, v, m0.left, m0.right, m0.c);
     }
-    
+    public int hashCode() { 
+        return size();
+    }
+    @SuppressWarnings("unchecked")
+    ArrayList<K> addTo(FMap m) {
+        ArrayList<K> keysList = new ArrayList<K>();
+        if (!this.isEmpty()) {
+            BST_Include i = (BST_Include) m;
+            keysList.add((K)i.k0);
+        }
+        return traverse(m,keysList);
+    }
+    @SuppressWarnings("unchecked")
+    private ArrayList<K> traverse(FMap m, ArrayList<K> keysList) {
+        if (this.isEmpty()) {
+            return keysList;
+        }
+        BST_Include i = (BST_Include) m;
+        if( !i.right.isEmpty() ) {
+            BST_Include ir = (BST_Include)i.right;
+            keysList.add((K)ir.k0);
+        }
+        if( !i.left.isEmpty() ) {
+            BST_Include il = (BST_Include)i.left;
+            keysList.add((K)il.k0);
+        }
+        traverse(i.right,keysList);
+        traverse(i.left,keysList);
+        return keysList;
+    }
 }
 
 class BST_Include<K,V> extends BST<K,V> {
 
-    java.util.Comparator<? super K> c;
     BST<K,V> right;
     BST<K,V> left;
     K k0;
@@ -569,7 +604,7 @@ class BST_Include<K,V> extends BST<K,V> {
 }
 
 class BST_Empty<K,V> extends BST<K,V> {
-    java.util.Comparator<? super K> c;
+
     BST_Empty(java.util.Comparator<? super K> c) {
         this.c = c;
     }   
