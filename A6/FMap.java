@@ -200,7 +200,7 @@ public abstract class FMap<K,V> implements Iterable<K> {
     public int hashCode() { 
         int hash = 0;
         for (K k : this) {
-            hash += k.hashCode() + this.get(k).hashCode();
+            hash += k.hashCode()*5 + this.get(k).hashCode()*7;
         }
         return hash;
     }
