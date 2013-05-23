@@ -495,26 +495,16 @@ class Include<K,V> extends FMapL<K,V> {
 } 
 abstract class BST<K,V> extends FMap<K,V> {
     abstract boolean isLeafMethod();
+    abstract BST includeMethod(K k, V v); 
+
     java.util.Comparator<? super K> c;
     
     public boolean isLeaf() {
         return isLeafMethod();
     }
 
-    @SuppressWarnings("unchecked")
-    public BST<K,V> include (K k, V v) {
-        if (this.isEmpty()) {
-            return new BST_Include<K,V>(k,v,this,this,this.c);
-        }
-        BST_Include m0 = (BST_Include) this;
-        if ( m0.c.compare(k,m0.k0) < 0 ) {
-            return new BST_Include( m0.k0, m0.v0, m0.left.include(k,v), m0.right, m0.c);
-        }
-        if ( m0.c.compare(k,m0.k0) > 0 ) {
-            return new BST_Include( m0.k0, m0.v0, m0.left, m0.right.include(k,v), m0.c);
-        }
-        m0.size--;
-        return new BST_Include( m0.k0, v, m0.left, m0.right, m0.c);
+    public FMap include(K k, V v) {
+        return includeMethod(k,v);
     }
     public int hashCode() { 
         return size();
@@ -563,6 +553,17 @@ class BST_Include<K,V> extends BST<K,V> {
         this.left = left;
         this.c = c;
         size = right.size() + left.size() + 1;
+    }
+    @SuppressWarnings("unchecked")
+    public BST<K,V> includeMethod (K k, V v) {
+        if ( c.compare(k,k0) < 0 ) {
+            return new BST_Include( k0, v, left.includeMethod(k,v), right, c);
+        }
+        if ( c.compare(k,k0) > 0 ) {
+            return new BST_Include( k0, v, left, right.includeMethod(k,v), c);
+        }
+        size--;
+        return new BST_Include( k0, v, left, right, c);
     }    
     public boolean isEmptyMethod() {
         return false;
@@ -580,7 +581,7 @@ class BST_Include<K,V> extends BST<K,V> {
         return k.equals(k0);
     }
     public V getMethod(K k) {
-         if ( c.compare(k,k0) == 0 ) {
+        if ( k.equals(k0) ) {
             return v0;
         } else if ( c.compare(k,k0) > 0 ) {
             return right.get(k);
@@ -608,6 +609,9 @@ class BST_Empty<K,V> extends BST<K,V> {
     BST_Empty(java.util.Comparator<? super K> c) {
         this.c = c;
     }   
+    public BST<K,V> includeMethod (K k, V v) {
+        return new BST_Include<K,V>(k,v,this,this,this.c);
+    }
     public boolean isEmptyMethod() {
         return true;
     }
