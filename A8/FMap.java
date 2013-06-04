@@ -1,5 +1,5 @@
 /**
- * Assignment 6 - FMap.
+ * Assignment 8 - FMap.
  * @author Kevin Langer
  * klanger@ccs.neu.edu
  *
@@ -7,11 +7,11 @@
  * data types. Three classes: abstract class FMap
  * and Empty and Include which serve as the basic
  * creators for FMap.
- * An itterator is added to transverse this map.
+ * An iterator is added to transverse this map.
  */
 
 /**
- * ArrayList is the backbone of itterator
+ * ArrayList is the backbone of iterator
  * collections is used to sort the arrayList
  * Iterator is used to implement next, hasNext, and remove
  */
