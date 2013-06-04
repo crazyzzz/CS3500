@@ -201,15 +201,23 @@ public abstract class FMap<K,V> implements Iterable<K> {
         //Variable for summing hash
         int hash = 0;
         for (K k : this) {
-            hash += k.hashCode()*5 + this.get(k).hashCode()*7;
+            hash += k.hashCode()*61 + this.get(k).hashCode()*149;
         }
         return hash;
     }
+
+    /*
+     * accept
+     * provides a list based FMap where all the elemts
+     * of the FMap calling accept have been visited
+     * The visitor is a transform function of the values
+     * @param Visitor from the visitor class defined elsewhere
+     * @return FMap list form of the FMap calling this method
+     */ 
     public FMap<K,V> accept (Visitor<K,V> v) {
         FMap<K,V> f = FMap.empty(); 
         for (K k : this ) {
-            f = f.include(k,this.get(k));
-            v.visit(k,this.get(k));
+            f = f.include(k,v.visit(k,this.get(k)));     
         }
         return f;
     }
@@ -260,85 +268,6 @@ abstract class FMapL<K,V> extends FMap<K,V> {
         return new Include<K,V>(this, k,v);
     }
 }
-
-/**
- * Class FIterator<K> provides support for an FMap iterator
-*/
-class FIterator<K>  implements Iterator<K> {
-
-    /*
-     * m0 is a reference to the current FMap
-     * c is an optional comparator used to sort
-     * keysList is the arrayList used to store the itterable keys
-     * keysIt is the itterator of the arrayList that provides support for next
-     * and hasNext
-     */    
-    FMap m0;
-    java.util.Comparator<? super K> c;
-    ArrayList<K> keysList;
-    Iterator<K> keysIt;
-
-    /*
-     * constructor for FIterator which constructs the arrayList and
-     * stores the map.
-     * @param FMap of current map to construct itterator from
-     * @return --
-     */
-    @SuppressWarnings("unchecked")
-    FIterator(FMap m0) {
-        this.m0 = m0;
-        keysList = m0.addAllKeys(m0);
-        keysIt = keysList.iterator();
-    }
-
-    /* 
-     * additonal constructor which calls previous constructor and 
-     * then uses the comparator to sort the keys.
-     * @param FMap of current map to construct itterator from
-     * @param Comparator for which to sort by
-     * @return --
-     */
-    FIterator(FMap m0, java.util.Comparator<? super K> c) {
-        this(m0);
-        this.c = c;
-        Collections.sort(keysList,c);
-    }
-    
-    /*
-     * hasNext
-     * returns if the ArrayList has more elements.
-     * uses the arrayList itterator to do so.
-     * @param --
-     * boolean indicating if there are more element
-     */
-    public boolean hasNext() {
-        return keysIt.hasNext(); 
-    }
-
-    /* 
-     * next
-     * get the next key from the arrayList's itterator
-     * throws exception if !hasNext()=true
-     * @param --
-     * @return K of the next key 
-     */
-    public K next() {
-        return keysIt.next();
-    }
-
-    /* 
-     * remove
-     * unsuppoted method
-     * has no effects and throws exception
-     * @param --
-     * @return --
-     */
-    public void remove() {
-        throw new 
-            UnsupportedOperationException("UnsupportedOperationException");
-    }     
-}
-
 /**
  * Class Empty extends FMap.
  * An empty FMap. Has no items.
@@ -419,7 +348,11 @@ class Include<K,V> extends FMapL<K,V> {
     FMap<K,V> m0;
     K k0;
     V v0;
+    //Removed fast size to meet visitor timing requirements
+    /*
     private int size;
+    */
+
     /**
      * Include constructor for FMap to add values
      * to the list. Include is the only way to change 
@@ -433,10 +366,13 @@ class Include<K,V> extends FMapL<K,V> {
         this.m0 = m0;
         this.k0 = k0;
         this.v0 = v0;
+        //Removed fast size to meet visitor timing requirements
+        /*
         size = m0.size();
         if (!m0.containsKey(k0)) {
             size++;
         }
+        */
     }
 
     /**
@@ -455,7 +391,10 @@ class Include<K,V> extends FMapL<K,V> {
      * @return int representing the size of the FMap
      */
     int sizeMethod() {
-        return size;
+        if (!m0.containsKey(k0)) {
+            return 1 + m0.size();
+        }
+        return m0.size();
     }
     
     /**
@@ -533,7 +472,7 @@ abstract class BST<K,V> extends FMap<K,V> {
     //Both BST_Empty and BST_Include must support a comparator
     java.util.Comparator<? super K> c;
 
-     /*
+     /*visit
      * include
      * wrapper for includeMethod to implement FMap's include
      * @param K key
@@ -829,4 +768,81 @@ class BST_Empty<K,V> extends BST<K,V> {
     boolean equalsMethod(FMap m2) {
         return true;
     }
+}
+/**
+ * Class FIterator<K> provides support for an FMap iterator
+*/
+class FIterator<K>  implements Iterator<K> {
+
+    /*
+     * m0 is a reference to the current FMap
+     * c is an optional comparator used to sort
+     * keysList is the arrayList used to store the itterable keys
+     * keysIt is the itterator of the arrayList that provides support for next
+     * and hasNext
+     */    
+    FMap m0;
+    java.util.Comparator<? super K> c;
+    ArrayList<K> keysList;
+    Iterator<K> keysIt;
+
+    /*
+     * constructor for FIterator which constructs the arrayList and
+     * stores the map.
+     * @param FMap of current map to construct itterator from
+     * @return --
+     */
+    @SuppressWarnings("unchecked")
+    FIterator(FMap m0) {
+        this.m0 = m0;
+        keysList = m0.addAllKeys(m0);
+        keysIt = keysList.iterator();
+    }
+
+    /* 
+     * additonal constructor which calls previous constructor and 
+     * then uses the comparator to sort the keys.
+     * @param FMap of current map to construct itterator from
+     * @param Comparator for which to sort by
+     * @return --
+     */
+    FIterator(FMap m0, java.util.Comparator<? super K> c) {
+        this(m0);
+        this.c = c;
+        Collections.sort(keysList,c);
+    }
+    
+    /*
+     * hasNext
+     * returns if the ArrayList has more elements.
+     * uses the arrayList itterator to do so.
+     * @param --
+     * boolean indicating if there are more element
+     */
+    public boolean hasNext() {
+        return keysIt.hasNext(); 
+    }
+
+    /* 
+     * next
+     * get the next key from the arrayList's itterator
+     * throws exception if !hasNext()=true
+     * @param --
+     * @return K of the next key 
+     */
+    public K next() {
+        return keysIt.next();
+    }
+
+    /* 
+     * remove
+     * unsuppoted method
+     * has no effects and throws exception
+     * @param --
+     * @return --
+     */
+    public void remove() {
+        throw new 
+            UnsupportedOperationException("UnsupportedOperationException");
+    }     
 }
