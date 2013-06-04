@@ -32,6 +32,14 @@ public abstract class FMap<K,V> implements Iterable<K> {
      */
     public abstract FMap<K,V> include (K k, V v);
 
+    /**
+     * accept
+     * @param K key 
+     * @param V value
+     * @return FMap<K,V> of FMap where all elements are visited
+     */
+    public abstract FMap<K,V> accept (Visitor<K,V> v);
+    
     /** 
      * isEmptyMethod
      * @param --
@@ -205,22 +213,6 @@ public abstract class FMap<K,V> implements Iterable<K> {
         }
         return hash;
     }
-
-    /*
-     * accept
-     * provides a list based FMap where all the elemts
-     * of the FMap calling accept have been visited
-     * The visitor is a transform function of the values
-     * @param Visitor from the visitor class defined elsewhere
-     * @return FMap list form of the FMap calling this method
-     */ 
-    public FMap<K,V> accept (Visitor<K,V> v) {
-        FMap<K,V> f = FMap.empty(); 
-        for (K k : this ) {
-            f = f.include(k,v.visit(k,this.get(k)));     
-        }
-        return f;
-    }
             
 }
 
@@ -266,6 +258,24 @@ abstract class FMapL<K,V> extends FMap<K,V> {
      */
     public FMap<K,V> include (K k, V v) {
         return new Include<K,V>(this, k,v);
+    }
+
+    /*
+     * accept
+     * provides a list based FMap where all the elemts
+     * of the FMap calling accept have been visited
+     * The visitor is a transform function of the values
+     * @param Visitor from the visitor class defined elsewhere
+     * @return FMap list form of the FMap calling this method
+     */ 
+    public FMap<K,V> accept (Visitor<K,V> v) {
+        //Construct new FMap        
+        FMap<K,V> f = FMap.empty();
+        for (K k : this ) {
+            //preform accept transform
+            f = f.include(k,v.visit(k,this.get(k)));     
+        }
+        return f;
     }
 }
 /**
@@ -472,7 +482,7 @@ abstract class BST<K,V> extends FMap<K,V> {
     //Both BST_Empty and BST_Include must support a comparator
     java.util.Comparator<? super K> c;
 
-     /*visit
+     /*
      * include
      * wrapper for includeMethod to implement FMap's include
      * @param K key
@@ -519,6 +529,9 @@ abstract class BST<K,V> extends FMap<K,V> {
         //non-empty elements are cast
         BST_Include i = (BST_Include) m;
         //Add non-empty elements to the ArrayList<K>
+
+        //Travse tree in-order
+        traverse(i.left,keysList);
         if( !i.right.isEmpty() ) {
             BST_Include ir = (BST_Include)i.right;
             keysList.add((K)ir.k0);
@@ -527,9 +540,7 @@ abstract class BST<K,V> extends FMap<K,V> {
             BST_Include il = (BST_Include)i.left;
             keysList.add((K)il.k0);
         }
-        //Travse tree in-order
         traverse(i.right,keysList);
-        traverse(i.left,keysList);
         return keysList;
     }
     
@@ -547,6 +558,24 @@ abstract class BST<K,V> extends FMap<K,V> {
         BST<K,V> left, BST<K,V> right, java.util.Comparator<? super K> c) {
         return new BST_Include( k, v, left, right, c);
     } 
+
+    /*
+     * accept
+     * provides a list based FMap where all the elemts
+     * of the FMap calling accept have been visited
+     * The visitor is a transform function of the values
+     * @param Visitor from the visitor class defined elsewhere
+     * @return FMap list form of the FMap calling this method
+     */ 
+    public FMap<K,V> accept (Visitor<K,V> v) {
+        //Construct new FMap        
+        FMap<K,V> f = FMap.empty( this.c);
+        for (K k : this ) {
+            //preform accept transform
+            f = f.include(k,v.visit(k,this.get(k)));     
+        }
+        return f;
+    }
 }
 
 /**
@@ -582,10 +611,7 @@ class BST_Include<K,V> extends BST<K,V> {
     BST_Include(K k, V v, 
         BST<K,V> left, BST<K,V> right, java.util.Comparator<? super K> c) {
         
-        size = right.size() + left.size();        
-        if(!right.containsKey(k) && !right.containsKey(k)) {
-            size+=1;
-        }
+        size = right.size() + left.size() + 1 ;        
         k0 = k;
         v0 = v;
         this.right = right;
