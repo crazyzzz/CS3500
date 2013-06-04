@@ -618,7 +618,7 @@ class BST_Include<K,V> extends BST<K,V> {
     BST<K,V> left;
     K k0;
     V v0;
-    int size;
+    int size = 0;
 
     /* 
      * BST_Include
@@ -635,9 +635,10 @@ class BST_Include<K,V> extends BST<K,V> {
         BST<K,V> left, BST<K,V> right, java.util.Comparator<? super K> c) {
         
         size = right.size() + left.size();        
-        if(!right.containsKey(k) && !right.containsKey(k)) {
-            size+=1;
+        if(!right.containsKey(k) && !left.containsKey(k)) {
+           size+=1;
         }
+        
         k0 = k;
         v0 = v;
         this.right = right;

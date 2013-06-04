@@ -205,6 +205,15 @@ public abstract class FMap<K,V> implements Iterable<K> {
         }
         return hash;
     }
+    public FMap<K,V> accept (Visitor<K,V> v) {
+        FMap<K,V> f = FMap.empty(); 
+        for (K k : this ) {
+            f = f.include(k,this.get(k));
+            v.visit(k,this.get(k));
+        }
+        return f;
+    }
+            
 }
 
 /**
