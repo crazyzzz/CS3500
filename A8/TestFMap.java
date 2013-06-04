@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Basic test program for assignment 6 Summer 2013.
- * improving performance of FMap
+ * Basic test program for assignment 8 Summer 2013.
+ * improving performance of FMap and adding visitor
  * @author Clinger
  * @author Schmidt
  */
@@ -26,9 +26,10 @@ public class TestFMap {
         test.usual();
         test.iterators(0);
         test.iterators(1);
+        test.visitors();
         test.accessors();            // repeated to test for side effects
         test.usual();                // repeated to test for side effects
-
+        test.visitors();             // repeated to test for side effects
 
         // Test with 1-argument FMap.empty().
 
@@ -38,9 +39,10 @@ public class TestFMap {
         test.usual();
         test.iterators(0);
         test.iterators(1);
+        test.visitors();
         test.accessors();            // repeated to test for side effects
         test.usual();                // repeated to test for side effects
-
+        test.visitors();             // repeated to test for side effects
 
         System.out.println("Testing cross-representation equality");
 
@@ -691,6 +693,46 @@ public class TestFMap {
 
 
     /**
+     * Tests the accept method.
+     */
+    private void visitors () {
+        try {
+            Visitor<Integer,String> v1
+                = new Visitor<Integer,String>() {
+		public String visit (Integer k, String v) {
+		    return v;
+		}
+	    };
+
+            assertTrue ("accept001", f0.equals(f0.accept(v1)));
+            assertTrue ("accept551", f5.equals(f5.accept(v1)));
+            assertTrue ("accept461", f4.equals(f6.accept(v1)));
+            assertTrue ("accept641", f6.equals(f4.accept(v1)));
+            assertTrue ("accept281", f2.equals(f8.accept(v1))); 
+  
+            Visitor<Integer,String> v2
+                = new Visitor<Integer,String>() {
+		public String visit (Integer k, String v) {
+		    return v + v;
+		}
+	    };
+
+            assertTrue ("accept7,2,1",
+                        f7.accept(v2).get(one).equals("AliceAlice"));  
+            assertTrue ("accept7,2,2",
+                        f7.accept(v2).get(two).equals("BobBob")); 
+            assertTrue ("accept7,2size",
+                        f7.accept(v2).size() == 2);
+        }
+        catch (Exception e) {
+            System.out.println("Exception thrown during accept tests:");
+            System.out.println(e);
+            assertTrue ("accept", false);
+        }
+    }
+
+
+    /**
      * Tests equality of FMap values that were created using
      * 0-argument and 1-argument empty, as well as different
      * comparators.
@@ -835,11 +877,11 @@ public class TestFMap {
             assertTrue ("hashCode44", f4.hashCode() == f4.hashCode());
             assertTrue ("hashCode46", f4.hashCode() == f6.hashCode());
             assertTrue ("hashCode27", f2.hashCode() == f7.hashCode());
-	    assertTrue("hashCode_equalsReverseIntegerComparator", 
+	    assertTrue("equalsReverseIntegerComparator", 
                        FMap.empty().include(1,"test").hashCode() ==
                        FMap.empty(reverseIntegerComparator)
 		       .include(1,"test").hashCode());
-            assertTrue("hashCode_equalsReverseIntegerComparator2", 
+            assertTrue("equalsReverseIntegerComparator2", 
                        FMap.empty().include(2,"two").include(1,"test")
 		       .hashCode() ==
                        FMap.empty(reverseIntegerComparator)
@@ -857,11 +899,11 @@ public class TestFMap {
      * Probabilistic test for distribution of hash codes.
      */
     private void probabilisticTests () {
-        probabilisticTests (200, 100);
+        probabilisticTests (500, 75);
         base = -2;
-        probabilisticTests (200, 100);
+        probabilisticTests (500, 75);
         base = 412686306;
-        probabilisticTests (200, 100);
+        probabilisticTests (500, 75);
     }
 
     // random number generator, initialed by probabilisticTests()
@@ -870,7 +912,7 @@ public class TestFMap {
     int base = 0;   // base for Frob hash codes
 
     private void initializeRNG () {
-        rng = new Random(1059786856);
+        rng = new Random(1505976868);
     }
 
     private void initializeRNGrandomly () {
@@ -1026,14 +1068,14 @@ public class TestFMap {
         long run (int n, long iters) {
             FMap<Foo,Double> m = m0;
             for (int j = 0; j < n; j = j + 1){
-                m = m.include(new Foo(j+n), (double) j+n);
+                m = m.include(new Foo(j+n), new Double((double) j+n));
             }
             FMap<Foo,Double> m1 = m;
             long tStart = System.currentTimeMillis();
             for (long i = 0; i < iters; i = i + 1) {
                 m = m1;
                 for (int j = 0; j < n; j = j + 1){
-                    m = m.include(new Foo(j), (double) j);
+                    m = m.include(new Foo(j), new Double((double) j));
                 }
             }
             long tFinish = System.currentTimeMillis();
@@ -1073,7 +1115,7 @@ public class TestFMap {
         long run (int n, long iters) {
             FMap<Foo,Double> m = m0;
             for (int j = 0; j < n; j = j + 1)
-                m = m.include(new Foo(j), (double) j);
+                m = m.include(new Foo(j), new Double((double) j));
             long tStart = System.currentTimeMillis();
             for (long i = 0; i < iters; i = i + 1) {
                 if (m.isEmpty())
@@ -1112,7 +1154,7 @@ public class TestFMap {
         long run (int n, long iters) {
             FMap<Foo,Double> m = m0;
             for (int j = 0; j < n; j = j + 1)
-                m = m.include(new Foo(j), (double) j);
+                m = m.include(new Foo(j), new Double((double) j));
             long tStart = System.currentTimeMillis();
             for (long i = 0; i < iters; i = i + 1) {
                 if (m.size() == 0)
@@ -1152,7 +1194,7 @@ public class TestFMap {
             Foo f0 = new Foo(0);
             FMap<Foo,Double> m = m0.include(f0,0.0);
             for (int j = 1; j < n; j = j + 1)
-                m = m.include(new Foo(j), (double) j);
+                m = m.include(new Foo(j), new Double((double) j));
             long tStart = System.currentTimeMillis();
             for (long i = 0; i < iters; i = i + 1) {
                 if (! m.containsKey(f0))
@@ -1197,7 +1239,7 @@ public class TestFMap {
             Foo f0 = new Foo(0);
             FMap<Foo,Double> m = m0.include(f0,0.0);
             for (int j = 1; j < n; j = j + 1)
-                m = m.include(new Foo(j), (double) j);
+                m = m.include(new Foo(j), new Double((double) j));
             long tStart = System.currentTimeMillis();
             for (long i = 0; i < iters; i = i + 1) {
                 if (m.get(f0) != 0.0)
@@ -1241,7 +1283,7 @@ public class TestFMap {
         long run (int n, long iters) {
             FMap<Foo,Double> m = m0;
             for (int j = 0; j < n; j = j + 1)
-                m = m.include(new Foo(j), (double) j);
+                m = m.include(new Foo(j), new Double((double) j));
             long tStart = System.currentTimeMillis();
             for (long i = 0; i < iters; i = i + 1) {
                 Iterator<Foo> it = m.iterator();
@@ -1281,7 +1323,7 @@ public class TestFMap {
         long run (int n, long iters) {
             FMap<Foo,Double> m = m0;
             for (int j = 0; j < n; j = j + 1)
-                m = m.include(new Foo(j), (double) j);
+                m = m.include(new Foo(j), new Double((double) j));
             Iterator<Foo> it = m.iterator();
             Foo whatever = null;
             long tStart = System.currentTimeMillis();
@@ -1303,6 +1345,59 @@ public class TestFMap {
             System.out.println("    n=" + n + " in " + t1n + "ms");
             System.out.println("    n=" + (4*n) + " in " + t4n + "ms");
             return ((double) t4n) < 1.5 * ((double) t1n);
+        }
+    }
+
+    /**
+     * Timing m.accept(v)
+     */
+    private static class TimeAccept extends Benchmark {
+
+        private FMap<Foo,Double> m0;
+
+        TimeAccept (FMap<Foo,Double> m0, int n0, long iterations0) {
+            this.m0 = m0;
+            this.n0 = n0;
+            this.iterations0 = iterations0;
+        }
+
+        long run (int n, long iters) {
+            Foo f0 = new Foo(0);
+            FMap<Foo,Double> m = m0.include(f0,0.0);
+            for (int j = 1; j < n; j = j + 1)
+                m = m.include(new Foo(j), new Double((double) j));
+            Visitor<Foo,Double> v
+                = new Visitor<Foo,Double>() {
+		public Double visit (Foo x, Double d) {
+		    return d;
+		}
+	    };
+            long tStart = System.currentTimeMillis();
+            for (long i = 0; i < iters; i = i + 1) {
+                if (m.accept(v).get(f0) != 0.0)
+                    throw
+                        new RuntimeException("incorrect accept() method");
+            }
+            long tFinish = System.currentTimeMillis();
+            return tFinish - tStart;
+        }
+	/**
+	 * Should run in O(n*log(n)) time.
+	 */
+        boolean compareToExpected () {
+            System.out.println();
+            System.out.println("m.accept(v) benchmark ("
+                               + iterations + " iterations): O(n*log(n))");
+            System.out.println("    n=" + n + " in " + t1n + "ms");
+            System.out.println("    n=" + (4*n) + " in " + t4n + "ms");
+	    //System.out.println(Foo.counter);
+	    /* return ((double) t4n)
+	       < 1.5 * 4 * ((double) t1n);*/
+	    double lgn  = lg((double) n);
+            double lg4n = lg((double) 4*n);
+  	    //System.out.println("    factor="+(((double) t4n)/((double) t1n)));
+            return ((double) t4n)
+                < 1.5 * (lg4n / lgn) * 4 * ((double) t1n);
         }
     }
 
@@ -1460,6 +1555,8 @@ public class TestFMap {
                        new TimeIterator(f0, 64, 32).run());
             assertTrue("hasNext() is O(1)",
                        new TimeHasNext(f0, 64, 64*1024*1024).run());
+	    assertTrue("accept(visitor) is O(n lg n)",
+		       new TimeAccept(f0, 64, 32).run());
         }
 
         System.out.println ("\nAverage case:");
@@ -1478,6 +1575,8 @@ public class TestFMap {
                    new TimeIterator(f0c, 64, 32).run());
         assertTrue("hasNext() is O(1)",
                    new TimeHasNext(f0c, 64, 64*1024*1024).run());
+	assertTrue("accept(visitor) is O(n lg n)",
+		   new TimeAccept(f0c, 64, 32).run());
     }
 
 
