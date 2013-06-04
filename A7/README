@@ -1,0 +1,15 @@
+NEU CS3500 Summer 1 2013
+Object Oriented Design
+Assignment 7
+Ches, Kevin, Portia
+
+Operations:
+$ relink.pl <Name>Test.java
+ex:
+$ relink.pl ChesTest.java
+This will change the test file being used, and remake all the programs.
+
+$ make test
+or
+$ testsummarize.pl
+Will run all of the tests.

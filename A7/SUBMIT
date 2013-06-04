@@ -1,0 +1,52 @@
+/course/cs3500su13-1/submit7  klanger@ccs.neu.edu 7 TestFListInteger.java Memo.txt
+Your assignment has been submitted successfully.
+Your confirmation number is c425517b
+
+
+total 180K
+drwxr-xr-x 13 klanger students 4.0K 2013-05-31 14:19 [0m[01;34m.[0m
+drwxr-xr-x  3 klanger students  12K 2013-05-30 19:02 [01;34m..[0m
+-rw-r--r--  1 klanger students 9.1K 2013-05-31 14:14 ChesReport.txt
+-rw-r--r--  1 klanger students  10K 2013-05-31 00:16 ChesTest.java
+drwxr-xr-x  5 klanger students 4.0K 2013-05-30 19:02 [01;34mcompile_errors[0m
+-rw-r--r--  1 klanger students 9.1K 2013-05-31 14:14 FinalReport.txt
+drwxr-xr-x  8 klanger students 4.0K 2013-05-31 14:16 [01;34m.git[0m
+-rw-r--r--  1 klanger students    8 2013-05-31 14:14 .gitignore
+drwxr-xr-x  2 klanger students 4.0K 2013-05-30 19:02 [01;34mindividualmake[0m
+-rwxr-xr-x  1 klanger students 3.1K 2013-05-31 14:14 [01;32mKevinsReport.txt[0m
+-rw-r--r--  1 klanger students  13K 2013-05-31 14:14 KevinTest.java
+-rw-r--r--  1 klanger students  13K 2013-05-30 19:02 KevinTest.java~
+-rw-r--r--  1 klanger students  109 2013-05-30 19:02 makefile
+-rw-r--r--  1 klanger students 9.1K 2013-05-31 14:16 Memo.txt
+-rw-r--r--  1 klanger students 1.9K 2013-05-31 14:14 PortiasReport.txt
+lrwxrwxrwx  1 klanger students   13 2013-05-31 14:14 [01;36mPortiaTest.java[0m -> ChesTest.java
+-rw-r--r--  1 klanger students  286 2013-05-31 14:14 README
+-rwxr-xr-x  1 klanger students  215 2013-05-30 19:02 [01;32mrelink.pl[0m
+drwxr-xr-x  2 klanger students 4.0K 2013-05-30 19:02 [01;34msetup_old[0m
+drwxr-xr-x  2 klanger students 4.0K 2013-05-31 14:15 [01;34msu13114[0m
+drwxr-xr-x  2 klanger students 4.0K 2013-05-31 14:15 [01;34msu13123[0m
+drwxr-xr-x  2 klanger students 4.0K 2013-05-31 14:15 [01;34msu13139[0m
+drwxr-xr-x  2 klanger students 4.0K 2013-05-31 14:15 [01;34msu13142[0m
+drwxr-xr-x  2 klanger students 4.0K 2013-05-31 14:15 [01;34msu13143[0m
+drwxr-xr-x  2 klanger students 4.0K 2013-05-31 14:15 [01;34msu13165[0m
+drwxr-xr-x  2 klanger students 4.0K 2013-05-31 14:15 [01;34msu13169[0m
+-rw-r--r--  1 klanger students  171 2013-05-31 14:19 SUBMIT
+-rw-r--r--  1 klanger students  10K 2013-05-31 14:16 TestFListInteger.java
+-rwxr-xr-x  1 klanger students 1.2K 2013-05-30 19:02 [01;32mtestsummarize.pl[0m
+[m
+
+d9f99fdf652c6a2ed4fba4d6f388cec3  ChesReport.txt
+106920f392f163c5a9fd8acf1f3a3b31  ChesTest.java
+d9f99fdf652c6a2ed4fba4d6f388cec3  FinalReport.txt
+ff4f36fe9fc45cc6f3dd15b2c0113197  KevinsReport.txt
+43a2a7c7918133b536cea36967c72ad6  KevinTest.java
+d37c570683b9766a307f03f792e20723  KevinTest.java~
+ed456066a3ad128ec0917f803c1c7ffd  makefile
+0c2acc0f26e0780a2238d0a7dd6bb98f  Memo.txt
+acf2843df34a3d11bf72cfe0d9c0c0ba  PortiasReport.txt
+106920f392f163c5a9fd8acf1f3a3b31  PortiaTest.java
+6c82eb946308a6d86776f9a4c0e09115  README
+daa01bdd8e7f196722876f2333a94f98  relink.pl
+bf4fa88f1d81d19f528bea4b27c624a6  SUBMIT
+2faa2901c2c12e057fdffe1732c157ce  TestFListInteger.java
+7816a647794d6056602643861eb7a149  testsummarize.pl

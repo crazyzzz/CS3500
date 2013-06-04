@@ -1,0 +1,288 @@
+CS3500
+Assignment 7
+Group: 
+Kevin Langer
+Ches Koblents
+Portia Stephens
+
+-----------------------------------------------------------------------
+su13114
+
+Does not pass equality test.
+Furthermore, throws exception during equality test.
+
+Reason for not passing equality test:
+	Let fs0 be {9}
+	Let f1 be {8}
+Equality test that fails:
+	assertTrue("fs0, 0->8 == f1",
+		FListInteger.set(fs0, 0, new Integer(8)).equals(f1));
+su13114's FListInteger.equals implementation compares Integers with ==.
+This works when creating new Integers before running tests, and only
+using those Integers in the entire program. In this special case, every
+Integer representing an 8 is actually the same instance, and therefore
+the == comparison works; this is most likely why this bug was not caught
+by the original developer.
+
+However, comparing one Integer(8) to a new Integer(8) fails the ==
+comparison, returning that two equivalent lists are not equal.
+
+To fix this issue, change:
+if (x == l1.getMethod(0))
+to
+if (x.equals(l1.getMethod(0)))
+
+
+Reason for throwing exception during equality test:
+
+The equals method accepts an FListInteger. The first line in the method
+checks if the Integer stored in this is equal to the first Integer
+stored in the passed FListInteger. However, there is no check for size
+before this check, so when a non-empty FListInteger is compared to
+an empty FListInteger, there is an attempted access to index 0, which
+throws the exception.
+
+Culprit code snippet (reformatted slightly for readability):
+boolean equalsMethod(FListInteger l1){
+	if (x == l1.getMethod(0)) { // <-- culprit here
+		if (this.sizeMethod() == l1.sizeMethod()) {
+			return f.equalsMethod(l1.getFMethod());
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
+}
+
+To fix this issue, size should be checked before contents. A slight
+fix would look like the following: (again, also fixed for readability)
+boolean equalsMethod(FListInteger l1){
+	if (this.sizeMethod() == l1.sizeMethod()) {
+		// should change == to .equals as above, but this
+		// is just for fixing the exception thrown
+		if (x == l1.getMethod(0)) {
+			return f.equalsMethod(l1.getFMethod());
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
+}
+
+A slightly more concise rewrite would be something like
+boolean equalsMethod(FListInteger l1){
+	// again, should say x.equals
+	if (this.sizeMethod() == l1.sizeMethod() && x == l1.getMethod(0)) {
+		return f.equalsMethod(l1.getFMethod());
+	}
+	return false;
+}
+
+-----------------------------------------------------------------------
+su13123
+
+Does not pass equality test:
+	Let fs0 be {9}
+	Let f1 be {8}
+Equality test that fails:
+	assertTrue("fs0, 0->8 == f1",
+		FListInteger.set(fs0, 0, new Integer(8)).equals(f1));
+Reason for failure:
+
+su13123's FListInteger.equals implementation compares Integers with ==.
+This works when creating new Integers before running tests, and only
+using those Integers in the entire program. In this special case, every
+Integer representing an 8 is actually the same instance, and therefore
+the == comparison works; this is most likely why this bug was not caught
+by the original developer.
+
+However, comparing one Integer(8) to a new Integer(8) fails the ==
+comparison, returning that two equivalent lists are not equal.
+
+This can be fixed simply by changing the line
+if (! (FListInteger.get(this, i) == (FListInteger.get(f2, i))))
+to
+if (! (FListInteger.get(this, i).equals(FListInteger.get(f2, i))))
+
+-----------------------------------------------------------------------
+su13127
+
+Does not compile.
+Compile errors:
+FListInteger.java:62: possible loss of precision
+found   : double
+required: int
+		int x = 0.0;
+		        ^
+
+Solution:
+Change to line
+	int x = 0.0;
+to
+	int x = 0;
+
+-----------------------------------------------------------------------
+su13139
+
+Does not pass inequality tests.
+Unequal FListIntegers (of the same size) are still considered equal.
+The relevant code snippet is:
+
+public boolean listEquals(FListInteger l) {
+	for(int i = 0; i < FListInteger.size(this); i = i + 1 ) {
+		FListInteger.get(this, i).equals(FListInteger.get(l, i));
+	}
+	return true;
+}
+
+The comparison happens correctly, but it isn't wrapped in a
+conditional - the check happens, the result is discarded, and the
+method simply returns true.
+
+To fix this issue, there would be a slight change needed; something like:
+public boolean listEquals(FListInteger l) {
+	for(int i = 0; i < FListInteger.size(this); i = i + 1 ) {
+		if (! FListInteger.get(this, i).
+				equals(FListInteger.get(l, i))) {
+			return false;
+		}
+	}
+	return true;
+}
+
+-----------------------------------------------------------------------
+su13142
+
+No errors found.
+
+-----------------------------------------------------------------------
+su13143
+
+Does not pass empty list equality test.
+Two different instances of an empty list will not be equal to each other.
+The culprit is the following code, located in class emptyList [sic]:
+public boolean equals() {
+	return false;
+}
+
+That is, there is no implementation for emptyList.equals(Object),
+let alone a correct implementation to check for equality.
+
+A sample correct implementation would be (after removing the equals()
+method, because it does nothing useful):
+public boolean equals(Object other) {
+	return other != null && other instanceof emptyList;
+}
+This is a valid approach as any two empty lists are equal; however, a
+more verbose (and less efficient, but "expected") solution might be:
+public boolean equals(Object other) {
+	if (other == null) { return false; }
+	if (! other instanceof FListInteger) { return false; }
+	return FListInteger.isEmpty((FListInteger)other);
+}
+
+-----------------------------------------------------------------------
+su13165
+
+No errors found.
+
+-----------------------------------------------------------------------
+su13169
+
+No errors found.
+
+-----------------------------------------------------------------------
+su13170
+
+Does not compile.
+Compile errors:
+TestFListInteger.java:156: int cannot be dereferenced
+				FListInteger.get(f1, 0).equals(eight));
+				                       ^
+TestFListInteger.java:158: int cannot be dereferenced
+				FListInteger.get(f4, 3).equals(eight));
+				                       ^
+TestFListInteger.java:160: int cannot be dereferenced
+				FListInteger.get(f4, 2).equals(nine));
+				                       ^
+TestFListInteger.java:162: int cannot be dereferenced
+				FListInteger.get(f4, 1).equals(ten));
+				                       ^
+TestFListInteger.java:164: int cannot be dereferenced
+				FListInteger.get(f4, 0).equals(eleven));
+				                       ^
+TestFListInteger.java:166: int cannot be dereferenced
+				FListInteger.get(fs5, 0).equals(eleven));
+				                        ^
+TestFListInteger.java:168: int cannot be dereferenced
+				FListInteger.get(fs5, 1).equals(eleven));
+				                        ^
+TestFListInteger.java:170: int cannot be dereferenced
+				FListInteger.get(fs5, 2).equals(nine));
+				                        ^
+TestFListInteger.java:172: int cannot be dereferenced
+				FListInteger.get(fs5, 3).equals(eight));
+				                        ^
+
+Issue is caused by: get(FListInteger, int) returns int instead of an
+Integer as per the specifications.
+
+While the class does correctly store an Integer, it relies on autoboxing
+to return an int everywhere.
+
+Returning an Integer instead would fix these issues, as Integers may
+indeed be checked for equality with .equals(), whereas primitives may
+not, as primitives do not have methods and therefore cannot be
+dereferenced.
+
+A secondary issue was found: static methods were default, not public.
+While this works in this case, they should be public.
+
+-----------------------------------------------------------------------
+su13193
+
+
+Does not compile.
+Compile errors:
+TestFListInteger.java:156: int cannot be dereferenced
+				FListInteger.get(f1, 0).equals(eight));
+						       ^
+TestFListInteger.java:158: int cannot be dereferenced
+				FListInteger.get(f4, 3).equals(eight));
+						       ^
+TestFListInteger.java:160: int cannot be dereferenced
+				FListInteger.get(f4, 2).equals(nine));
+						       ^
+TestFListInteger.java:162: int cannot be dereferenced
+				FListInteger.get(f4, 1).equals(ten));
+						       ^
+TestFListInteger.java:164: int cannot be dereferenced
+				FListInteger.get(f4, 0).equals(eleven));
+						       ^
+TestFListInteger.java:166: int cannot be dereferenced
+				FListInteger.get(fs5, 0).equals(eleven));
+						        ^
+TestFListInteger.java:168: int cannot be dereferenced
+				FListInteger.get(fs5, 1).equals(eleven));
+						        ^
+TestFListInteger.java:170: int cannot be dereferenced
+				FListInteger.get(fs5, 2).equals(nine));
+						        ^
+TestFListInteger.java:172: int cannot be dereferenced
+				FListInteger.get(fs5, 3).equals(eight));
+						        ^
+
+Issue and solution is identical to su13170.
+
+Issue is caused by: get(FListInteger, int) returns int instead of an
+Integer as per the specifications.
+
+While the class does correctly store an Integer, it relies on autoboxing
+to return an int everywhere.
+
+Returning an Integer instead would fix these issues, as Integers may
+indeed be checked for equality with .equals(), whereas primitives may
+not, as primitives do not have methods and therefore cannot be
+dereferenced.

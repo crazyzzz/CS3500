@@ -1,0 +1,98 @@
+Kevin Langer's Report
+CS3500
+Assignment 7
+Group: 
+Kevin Langer
+Ches Koblents
+Portia Stephens
+	
+su13127
+	Problem: FListInteger does not compile 
+		line 62: int x =0.0;
+	Fix:
+		change to int x=0;
+
+su13170: 
+	Problem: TestFListInteger does not compile
+		line 31: static int getMethod(int indx) {
+	Fix: (needed to meet the specifications)
+		Change to public static Integer getMethod(int indx) {
+		Note: change all static methods to public to meet specs
+
+su13193: 
+	Problem: TestFListInteger does not compile
+		21: public static int get(FListInteger l, int k){	
+	Fix: (needed to meet the specifications)
+		Change to public static Integer getMethod(int indx) {
+
+su13114:
+	Problem: Broken equals helper method (inside List)
+		line 167: boolean equalsMethod(FListInteger l1){
+		line 168: if (x == l1.getMethod(0)) 
+	Whats wrong with it?: 
+		There are no guarantee that the paramaters to include
+		are non-empty. Only 'this' in List is known to be non-empty.
+	Fix (High level): 
+		While this code is causing an exception to be thrown on any
+		equality check to an empty FListInteger, there are many problems
+		with the equals. For example, for a List it never returns true
+		to indicate that the list is equal. 
+	Fix (low level):
+			int size_v = this.sizeMethod();
+			if (size_v != f2.sizeMethod()) {
+				return false;
+			}
+			for (int i = 0; i < size_v; i++ ) {
+				if ( !(this.getMethod(i).equals( f2.getMethod(i) ) ) ) {
+					return false;
+				}
+			}
+			return true;
+			
+su13123:
+	Problem: Testing Integer equality with == 
+		line 51: (! (FListInteger.get(this, i) == (FListInteger.get(f2, i)))) 
+	Whats wrong with it?:
+		Integer values, while they can be auto-boxed they are not auto-unboxed. 
+		As a result, this expresion sees if the two Integers are the same instance,
+		not value. This is implemented, in Java, as a memory adress comparison.
+	Fix (Low Level):
+		(! (FListInteger.get(this, i) .equals( (FListInteger.get(f2, i)))) )
+		
+su13139:
+	Problem: Broken equals helper method (inside lList)
+		line 60: FListInteger.get(this, i).equals(FListInteger.get(l, i));
+	Whats wrong with it?:
+		Never returns false if the Integers that it is checking are not equal
+	Fix (High level): 
+		Wrap existing logic in an if-statement
+	Fix (Low Level):
+		if (!FListInteger.get(this, i).equals(FListInteger.get(l, i)))
+                return false;
+				
+su13142:
+	No-Problems-detected 
+	
+su13143:
+	Problem: Broken equals overriding method for Empty
+		line 58: public boolean equals() {
+		line 59:	return false;
+	Whats wrong with it?:
+		It does not take the required Object paramater and
+		always returns false when an empty list is actually
+		equal to another empty list.
+	Fix (High level): 
+		Accept an object, check if it is an FListInteger
+		and also an empty list and return true if it is. 
+		Otherwise return false.
+	Fix (Low Level):
+		public boolean equals(Object obj) { 
+			if ( obj instanceof FListInteger) 
+				return FListInteger.isEmpty(((FListInteger)obj));
+			return false;
+		}
+su13165:
+	No-Problems-detected 
+su13169:
+	No-Problems-detected 
+		

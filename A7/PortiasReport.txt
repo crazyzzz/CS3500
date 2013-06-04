@@ -1,0 +1,82 @@
+Test Summary
+Portia Stephens 
+
+su13127: Failed, won't compile
+	line 62: int x = 0.0;
+	Cannot assign a double to an int without casting.s
+	Correct way to do it:
+		int x = 0;
+		
+su13170: Failed, won't compile
+	get() is returning an int instead of Integer
+	
+su13193: Failed, won't compile
+	getMethod() takes an Integer and returns an int, it should be the other way
+	around. getMethod() should take an int, the index, and return an Integer, 
+	the element.
+	
+su13114: Failed
+	equalsMethod() fails
+	
+	line 169
+	if(x == l1.getMethod());
+	
+	The conditional is comparing two Integers using == instead of the equals
+	method. 
+	
+	Correct Code:
+	if(x.equals(l1.getMethod()));
+	
+	
+su13143: Failed
+	
+	equals() method in Empty class fails
+	
+	line 58-60
+	public boolean equals(){
+		return false;
+	}
+	
+	It does not if the other FList is also equal because two empty FList are equal
+		 
+
+su13123: Failed
+	equals() method fails 
+	lines 51
+	
+	if (! (FListInteger.get(this, i) == (FListInteger.get(f2, i)))) 
+							return false;
+	
+	The conditional is comparing two objects of type Integer using == instead 
+	of an equals method.
+	
+	Correct Code:
+	
+	if((FListInteger.get(this, i).equals(FListInteger.get(f2,i)) == false)
+	{ return false; }
+
+su13139: Failed
+	equals() fails due helper method listEquals()
+	lines 58 - 63
+	
+	public boolean listEquals(FListInteger l) {
+		for(int i = 0; i < FListInteger.size(this); i = i + 1 ) {
+			FListInteger.get(this, i).equals(FListInteger.get(l, i));
+		}
+		return true;
+	}
+	
+	It makes the appropriate comparision but there is not path to return false.
+	Nothing is done if the elements are not equals.
+	
+	Corrected Code:
+		public boolean listEquals(FListInteger l) {
+		for(int i = 0; i < FListInteger.size(this); i = i + 1 ) {
+			if(FListInteger.get(this, i).equals(FListInteger.get(l, i))) == false){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	 
