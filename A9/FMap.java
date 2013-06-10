@@ -655,19 +655,22 @@ class BST_Include<K,V> extends BST<K,V> {
         BST<K,V> t;
         if ( c.compare(k,k0) < 0 ) {
             t = node( k0, v0, left.includeMethod(k,v), right, color, c);
-            return balanceMethod(t.toBlack());
+            return balanceMethod(t);
+            //return t;
         }
         if ( c.compare(k,k0) > 0 ) {
-            t = node( k0, v0, left, right.includeMethod(k,v), color, c);
-            return balanceMethod(t.toBlack());
+           t = node( k0, v0, left, right.includeMethod(k,v), color, c);
+            return balanceMethod(t);
+            //return t;
         }
-        return node( k0, v, left, right, Color.BLACK, c);
+        t = node( k0, v, left, right, color, c);
+        return balanceMethod(t);
+        //return t;
     }    
 
     BST<K,V> balanceMethod(BST<K,V> t) { 
-        if ( t.colorMethod().equals(Color.RED) ) {
-            return (BST<K,V>) t;
-        } else if ( t.getLeft().isRed() && t.getLeft().getLeft().isRed() ) {
+
+        if ( t.getLeft().isRed() && t.getLeft().getLeft().isRed()  ) {
 
             return swap(t.getLeft().getLeft().getLeft(), 
                 t.getLeft().getLeft().getRight(), t.getLeft().getRight(),
@@ -678,7 +681,7 @@ class BST_Include<K,V> extends BST<K,V> {
             return swap(t.getLeft().getLeft(), 
                 t.getLeft().getRight().getLeft(), 
                 t.getLeft().getRight().getRight(), t.getRight(),
-                t.getLeft().getLeft(), t.getLeft().getRight(), t);
+                t.getLeft(), t.getLeft().getRight(), t);
 
         } else if ( t.getRight().isRed() && t.getRight().getLeft().isRed() ) {
 
@@ -693,7 +696,7 @@ class BST_Include<K,V> extends BST<K,V> {
                 t.getRight().getRight().getRight(), t, t.getRight(),
                 t.getRight().getRight());
 
-        }
+        } 
         return (BST<K,V>)t;
     }
     BST<K,V> swap(BST<K,V> a, BST<K,V> b, BST<K,V> c, BST<K,V> d,
@@ -863,10 +866,10 @@ class BST_Empty<K,V> extends BST<K,V> {
         throw new RuntimeException("Key not found");
     }
     K getK() {
-        throw new RuntimeException("Key not found");
+        throw new RuntimeException("No keys in empty map");
     }
     V getV() {
-        throw new RuntimeException("Value not found");
+        throw new RuntimeException("No values in empty map");
     }
     BST<K,V> getLeft() {
         return this;
