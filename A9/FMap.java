@@ -468,6 +468,14 @@ class Include<K,V> extends FMapL<K,V> {
  * implements binary search trees to improve FMap preformance.
  */
 abstract class BST<K,V> extends FMap<K,V> {
+    
+    protected enum Color {
+        RED, BLACK
+    }
+    abstract V getV();
+    abstract K getK();
+    abstract BST<K,V> getLeft();
+    abstract BST<K,V> getRight();
 
     /*
      * includeMethod
@@ -478,9 +486,9 @@ abstract class BST<K,V> extends FMap<K,V> {
      * @return BST with key and value correctly added
      */
     abstract BST<K,V> includeMethod(K k, V v); 
-    
     //Both BST_Empty and BST_Include must support a comparator
     java.util.Comparator<? super K> c;
+    Color color;
 
      /*
      * include
@@ -555,8 +563,9 @@ abstract class BST<K,V> extends FMap<K,V> {
      * @return FMap new with correct structure and inserted key and value
      */
     BST<K,V> node(K k, V v, 
-        BST<K,V> left, BST<K,V> right, java.util.Comparator<? super K> c) {
-        return new BST_Include( k, v, left, right, c);
+        BST<K,V> left, BST<K,V> right, Color color,
+        java.util.Comparator<? super K> c) {
+        return new BST_Include( k, v, left, right, color, c);
     } 
 
     /*
@@ -576,6 +585,19 @@ abstract class BST<K,V> extends FMap<K,V> {
         }
         return f;
     }
+    Color colorMethod() {
+        return color;
+    }
+    BST<K,V> toBlack() {
+        color = Color.BLACK;
+        return this;
+    }
+    boolean isRed() {
+        return color.equals(Color.RED);
+    }
+    boolean isBlack() {
+        return !isRed();
+    } 
 }
 
 /**
@@ -609,13 +631,15 @@ class BST_Include<K,V> extends BST<K,V> {
      * @return BST_Include a tree with updated key and value.
      */
     BST_Include(K k, V v, 
-        BST<K,V> left, BST<K,V> right, java.util.Comparator<? super K> c) {
+        BST<K,V> left, BST<K,V> right, Color color,
+        java.util.Comparator<? super K> c) {
         size = right.size() + left.size() + 1 ;        
         k0 = k;
         v0 = v;
         this.right = right;
         this.left = left;
         this.c = c;
+        this.color = color;
     }
 
     /*
@@ -626,16 +650,58 @@ class BST_Include<K,V> extends BST<K,V> {
      * @param V value
      * @return BST<K,V> updated tree
      */
+    @SuppressWarnings("unchecked")
     BST<K,V> includeMethod (K k, V v) {
+        BST<K,V> t;
         if ( c.compare(k,k0) < 0 ) {
-            return node( k0, v0, left.includeMethod(k,v), right, c);
+            t = node( k0, v0, left.includeMethod(k,v), right, color, c);
+            return balanceMethod(t);
         }
         if ( c.compare(k,k0) > 0 ) {
-            return node( k0, v0, left, right.includeMethod(k,v), c);
+            t = node( k0, v0, left, right.includeMethod(k,v), color, c);
+            return balanceMethod(t);
         }
-        return node( k0, v, left, right, c);
+        return node( k0, v, left, right, color, c);
     }    
+    BST<K,V> balanceMethod(BST<K,V> t) { 
+        if ( t.colorMethod().equals(Color.RED) ) {
+            return (BST<K,V>) t;
+        } else if ( t.getLeft().isRed() && t.getLeft().getLeft().isRed() ) {
 
+            return swap(t.getLeft().getLeft().getLeft(), 
+                t.getLeft().getLeft().getRight(), t.getLeft().getRight(),
+                t.getRight(), t.getLeft().getLeft(), t.getLeft(), t); 
+
+        } else if ( t.getLeft().isRed() && t.getLeft().getRight().isRed() ) {
+
+            return swap(t.getLeft().getLeft(), 
+                t.getLeft().getRight().getLeft(), 
+                t.getLeft().getRight().getRight(), t.getRight(),
+                t.getLeft().getLeft(), t.getLeft().getRight(), t);
+
+        } else if ( t.getRight().isRed() && t.getRight().getLeft().isRed() ) {
+
+            return swap(t.getLeft(), t.getRight().getLeft().getLeft(),
+                t.getRight().getLeft().getRight(), t.getRight().getRight(),
+                t, t.getRight().getLeft(), t.getRight() );
+
+        } else if ( t.getRight().isRed() && t.getRight().getRight().isRed() ){
+            
+            return swap(t.getLeft(), t.getRight().getLeft(),
+                t.getRight().getRight().getLeft(), 
+                t.getRight().getRight().getRight(), t, t.getRight(),
+                t.getRight().getRight());
+
+        }
+        return (BST<K,V>)t;
+    }
+    BST<K,V> swap(BST<K,V> a, BST<K,V> b, BST<K,V> c, BST<K,V> d,
+        BST<K,V> x, BST<K,V> y, BST<K,V> z) {
+        
+        BST<K,V> left = node(x.getK(),x.getV(), a, b, Color.BLACK, this.c);
+        BST<K,V> right = node(z.getK(), z.getV(), c , d, Color.BLACK, this.c);
+        return node(y.getK(), y.getV(), left, right, Color.RED, this.c);
+    }
     /*
      * isEmptymethod
      * tree with nodes is not empty
@@ -711,6 +777,18 @@ class BST_Include<K,V> extends BST<K,V> {
         }
         return true;   
     }
+    K getK() {
+        return k0;
+    }
+    V getV() {
+        return v0;
+    }
+    BST<K,V> getLeft() {
+        return left;
+    }
+    BST<K,V> getRight() {
+        return right;
+    }
 }
 
 /**
@@ -729,6 +807,7 @@ class BST_Empty<K,V> extends BST<K,V> {
      */
     BST_Empty(java.util.Comparator<? super K> c) {
         this.c = c;
+        this.color = Color.BLACK;
     }   
 
     /*
@@ -739,7 +818,7 @@ class BST_Empty<K,V> extends BST<K,V> {
      * @return BST<K,V> of tree containing only a root
      */
     BST<K,V> includeMethod (K k, V v) {
-        return node(k,v,this,this,this.c);
+        return node(k,v,this,this,this.color,this.c);
     }
 
     /*
@@ -781,7 +860,19 @@ class BST_Empty<K,V> extends BST<K,V> {
     V getMethod(K k) {
         throw new RuntimeException("Key not found");
     }
-
+    K getK() {
+        throw new RuntimeException("Key not found");
+    }
+    V getV() {
+        throw new RuntimeException("Value not found");
+    }
+    BST<K,V> getLeft() {
+        return this;
+    }
+    BST<K,V> getRight() {
+        return this;
+    }
+    
     /**
      * equalsMethod
      * At this method the size of the paramater and the parent
