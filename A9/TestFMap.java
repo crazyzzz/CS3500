@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Basic test program for assignment 8 Summer 2013.
- * improving performance of FMap and adding visitor
+ * Basic test program for assignment 9 Summer 2013.
+ * improving performance by implementing red-black trees
  * @author Clinger
  * @author Schmidt
  */
@@ -699,10 +699,10 @@ public class TestFMap {
         try {
             Visitor<Integer,String> v1
                 = new Visitor<Integer,String>() {
-		public String visit (Integer k, String v) {
-		    return v;
-		}
-	    };
+                public String visit (Integer k, String v) {
+                    return v;
+                }
+            };
 
             assertTrue ("accept001", f0.equals(f0.accept(v1)));
             assertTrue ("accept551", f5.equals(f5.accept(v1)));
@@ -712,10 +712,10 @@ public class TestFMap {
   
             Visitor<Integer,String> v2
                 = new Visitor<Integer,String>() {
-		public String visit (Integer k, String v) {
-		    return v + v;
-		}
-	    };
+                public String visit (Integer k, String v) {
+                    return v + v;
+                }
+            };
 
             assertTrue ("accept7,2,1",
                         f7.accept(v2).get(one).equals("AliceAlice"));  
@@ -757,7 +757,7 @@ public class TestFMap {
         creation(0);
 
         try {
-	    //Testing equals
+            //Testing equals
             assertTrue ("equals00", this.f0.equals(f0));
             assertTrue ("equals33", this.f3.equals(f3));
             assertTrue ("equals55", this.f5.equals(f5));
@@ -815,7 +815,7 @@ public class TestFMap {
 
             creation (1, usualIntegerComparator);
 
-	    //Testing equals
+            //Testing equals
             assertTrue ("equals00", this.f0.equals(f0));
             assertTrue ("equals33", this.f3.equals(f3));
             assertTrue ("equals55", this.f5.equals(f5));
@@ -877,15 +877,15 @@ public class TestFMap {
             assertTrue ("hashCode44", f4.hashCode() == f4.hashCode());
             assertTrue ("hashCode46", f4.hashCode() == f6.hashCode());
             assertTrue ("hashCode27", f2.hashCode() == f7.hashCode());
-	    assertTrue("equalsReverseIntegerComparator", 
+            assertTrue("equalsReverseIntegerComparator", 
                        FMap.empty().include(1,"test").hashCode() ==
                        FMap.empty(reverseIntegerComparator)
-		       .include(1,"test").hashCode());
+                       .include(1,"test").hashCode());
             assertTrue("equalsReverseIntegerComparator2", 
                        FMap.empty().include(2,"two").include(1,"test")
-		       .hashCode() ==
+                       .hashCode() ==
                        FMap.empty(reverseIntegerComparator)
-		       .include(1,"test").include(2,"two").hashCode());
+                       .include(1,"test").include(2,"two").hashCode());
         }
         catch (Exception e) {
             System.out.println("Exception thrown during "
@@ -899,11 +899,11 @@ public class TestFMap {
      * Probabilistic test for distribution of hash codes.
      */
     private void probabilisticTests () {
-        probabilisticTests (500, 75);
+        probabilisticTests (400, 20);
         base = -2;
-        probabilisticTests (500, 75);
+        probabilisticTests (400, 20);
         base = 412686306;
-        probabilisticTests (500, 75);
+        probabilisticTests (400, 20);
     }
 
     // random number generator, initialed by probabilisticTests()
@@ -939,7 +939,7 @@ public class TestFMap {
                     sameHash = sameHash + 1;
             }
         }
-        System.out.println ("Same Hash: "+sameHash + " / " + n);
+        //System.out.println ("Same Hash: "+sameHash + " / " + n);
         if (sameHash >= k)
             assertTrue ("hashCode quality", 0 == sameHash);
     }
@@ -1368,10 +1368,10 @@ public class TestFMap {
                 m = m.include(new Foo(j), new Double((double) j));
             Visitor<Foo,Double> v
                 = new Visitor<Foo,Double>() {
-		public Double visit (Foo x, Double d) {
-		    return d;
-		}
-	    };
+                public Double visit (Foo x, Double d) {
+                    return d;
+                }
+            };
             long tStart = System.currentTimeMillis();
             for (long i = 0; i < iters; i = i + 1) {
                 if (m.accept(v).get(f0) != 0.0)
@@ -1381,21 +1381,21 @@ public class TestFMap {
             long tFinish = System.currentTimeMillis();
             return tFinish - tStart;
         }
-	/**
-	 * Should run in O(n*log(n)) time.
-	 */
+        /**
+         * Should run in O(n*log(n)) time.
+         */
         boolean compareToExpected () {
             System.out.println();
             System.out.println("m.accept(v) benchmark ("
                                + iterations + " iterations): O(n*log(n))");
             System.out.println("    n=" + n + " in " + t1n + "ms");
             System.out.println("    n=" + (4*n) + " in " + t4n + "ms");
-	    //System.out.println(Foo.counter);
-	    /* return ((double) t4n)
-	       < 1.5 * 4 * ((double) t1n);*/
-	    double lgn  = lg((double) n);
+            //System.out.println(Foo.counter);
+            /* return ((double) t4n)
+               < 1.5 * 4 * ((double) t1n);*/
+            double lgn  = lg((double) n);
             double lg4n = lg((double) 4*n);
-  	    //System.out.println("    factor="+(((double) t4n)/((double) t1n)));
+              //System.out.println("    factor="+(((double) t4n)/((double) t1n)));
             return ((double) t4n)
                 < 1.5 * (lg4n / lgn) * 4 * ((double) t1n);
         }
@@ -1555,8 +1555,8 @@ public class TestFMap {
                        new TimeIterator(f0, 64, 32).run());
             assertTrue("hasNext() is O(1)",
                        new TimeHasNext(f0, 64, 64*1024*1024).run());
-	    assertTrue("accept(visitor) is O(n lg n)",
-		       new TimeAccept(f0, 64, 32).run());
+            assertTrue("accept(visitor) is O(n lg n)",
+                       new TimeAccept(f0, 64, 32).run());
         }
 
         System.out.println ("\nAverage case:");
@@ -1575,8 +1575,31 @@ public class TestFMap {
                    new TimeIterator(f0c, 64, 32).run());
         assertTrue("hasNext() is O(1)",
                    new TimeHasNext(f0c, 64, 64*1024*1024).run());
-	assertTrue("accept(visitor) is O(n lg n)",
-		   new TimeAccept(f0c, 64, 32).run());
+        assertTrue("accept(visitor) is O(n lg n)",
+                   new TimeAccept(f0c, 64, 32).run());
+
+        System.out.println ("\nWorst case:");
+
+        Foo.worstCase = true;    // invalidates all Foo objects
+
+        assertTrue("include(k,v) is O(lg n)",
+                   new TimeInclude(f0c, 1024, 1024).run());
+        assertTrue("isEmpty() is O(1)",
+                   new TimeIsEmpty(f0c, 1, 1024*1024).run());
+        assertTrue("size() is O(1)",
+                   new TimeSize(f0c, 1, 1024*1024).run());
+        assertTrue("containsKey(k) is O(lg n)",
+                   new TimeContainsKey(f0c, 1, 1024*1024).run());
+        assertTrue("get(k) is O(lg n)",
+                   new TimeGet(f0c, 1, 1024*1024).run());
+        assertTrue("iterator() is O(n)",
+                   new TimeIterator(f0c, 64, 32).run());
+        assertTrue("hasNext() is O(1)",
+                   new TimeHasNext(f0c, 64, 64*1024*1024).run());
+        assertTrue("accept(visitor) is O(n lg n)",
+                   new TimeAccept(f0c, 64, 32).run());
+
+
     }
 
 
