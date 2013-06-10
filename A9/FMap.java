@@ -485,14 +485,18 @@ abstract class BST<K,V> extends FMap<K,V> {
      * return value at this
      */
     abstract V getV();
+
     /*
      * return key at this
      */
+
     abstract K getK();
     /*
      * return left subtree
      */
+
     abstract BST<K,V> getLeft();
+
     /*
      * return right subtree
      */
@@ -846,15 +850,43 @@ class BST_Include<K,V> extends BST<K,V> {
         }
         return true;   
     }
+    
+    /* 
+     * getK
+     * geter helper method
+     * @param --
+     * @return K key
+     */
     K getK() {
         return k0;
     }
+
+    /* 
+     * getV
+     * geter helper method
+     * @param --
+     * @return V value
+     */
     V getV() {
         return v0;
     }
+
+    /* 
+     * getLeft
+     * geter helper method
+     * @param --
+     * @return BST<K,V> left subtree
+     */
     BST<K,V> getLeft() {
         return left;
     }
+    
+    /* 
+     * getRight
+     * geter helper method
+     * @param --
+     * @return BST<K,V> right subtree
+     */
     BST<K,V> getRight() {
         return right;
     }
@@ -930,15 +962,41 @@ class BST_Empty<K,V> extends BST<K,V> {
     V getMethod(K k) {
         throw new RuntimeException("Key not found");
     }
+
+     /* 
+     * getK
+     * throws an exception as no keys are contains in an empty FMap
+     * @param --
+     */
     K getK() {
         throw new RuntimeException("No keys in empty map");
     }
+
+    /* 
+     * getV
+     * throws an exception as no keys are contains in an empty FMap
+     * @param --
+     */
     V getV() {
         throw new RuntimeException("No values in empty map");
     }
+
+    /* 
+     * getLeft
+     * subtrees of an empty tree are identity
+     * @param --
+     * @return BST<K,V> empty tree
+     */
     BST<K,V> getLeft() {
         return this;
     }
+
+    /* 
+     * getRight
+     * subtrees of an empty tree are identity
+     * @param --
+     * @return BST<K,V> empty tree
+     */
     BST<K,V> getRight() {
         return this;
     }
