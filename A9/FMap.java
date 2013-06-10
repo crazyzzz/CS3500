@@ -655,14 +655,15 @@ class BST_Include<K,V> extends BST<K,V> {
         BST<K,V> t;
         if ( c.compare(k,k0) < 0 ) {
             t = node( k0, v0, left.includeMethod(k,v), right, color, c);
-            return balanceMethod(t);
+            return balanceMethod(t.toBlack());
         }
         if ( c.compare(k,k0) > 0 ) {
             t = node( k0, v0, left, right.includeMethod(k,v), color, c);
-            return balanceMethod(t);
+            return balanceMethod(t.toBlack());
         }
-        return node( k0, v, left, right, color, c);
+        return node( k0, v, left, right, Color.BLACK, c);
     }    
+
     BST<K,V> balanceMethod(BST<K,V> t) { 
         if ( t.colorMethod().equals(Color.RED) ) {
             return (BST<K,V>) t;
@@ -818,7 +819,8 @@ class BST_Empty<K,V> extends BST<K,V> {
      * @return BST<K,V> of tree containing only a root
      */
     BST<K,V> includeMethod (K k, V v) {
-        return node(k,v,this,this,this.color,this.c);
+        //return node(k,v,this,this,this.color,this.c);
+        return node(k,v,this,this,Color.RED,this.c);
     }
 
     /*
