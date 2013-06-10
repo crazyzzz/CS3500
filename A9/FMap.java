@@ -579,18 +579,14 @@ abstract class BST<K,V> extends FMap<K,V> {
     public FMap<K,V> accept (Visitor<K,V> v) {
         //Construct new FMap        
         FMap<K,V> f = FMap.empty( this.c);
-        for (K k : this ) {
+        Iterator<K> i = this.iterator(this.c);
+        K k;
+        while( i.hasNext() ) {
             //preform accept transform
-            f = f.include(k,v.visit(k,this.get(k)));     
+            k = i.next();
+            f = f.include(k,v.visit(k,this.get( k )));     
         }
         return f;
-    }
-    Color colorMethod() {
-        return color;
-    }
-    BST<K,V> toBlack() {
-        color = Color.BLACK;
-        return this;
     }
     boolean isRed() {
         return color.equals(Color.RED);
