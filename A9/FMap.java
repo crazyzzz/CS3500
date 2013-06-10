@@ -206,10 +206,11 @@ public abstract class FMap<K,V> implements Iterable<K> {
      * @return int where m1.equals(lm) then hashCode(m1) == hashCode(m2)
     */
     public int hashCode() { 
-        //Variable for summing hash
-        int hash = 0;
+        //Center hashcode in interger range
+        int hash = 0x0000FFFF;
         for (K k : this) {
-            hash += k.hashCode()*59 + this.get(k).hashCode()*83;
+            //Make it unlikely that a non-negative v or k has a zero hashCode
+            hash += (k.hashCode()+5)*59 ^ (this.get(k).hashCode()+7)*83;
         }
         return hash;
     }
@@ -465,16 +466,36 @@ class Include<K,V> extends FMapL<K,V> {
 
 /**
  * Class BST encapsulates all comparator FMaps
- * implements binary search trees to improve FMap preformance.
- */
+ * implements red-black binary search trees to
+ * improve FMap preformance.
+ * Based on Chris Okasaki's Red-Black dissertation linked below 
+ * http://www.ccs.neu.edu/course/cs3500su13-1/jfp99redblack.pdf
+ */ 
 abstract class BST<K,V> extends FMap<K,V> {
     
+    /*
+     * Colors represent node state
+     * RED/BLACK chosen for legacy
+     */
     protected enum Color {
         RED, BLACK
     }
+    
+    /*
+     * return value at this
+     */
     abstract V getV();
+    /*
+     * return key at this
+     */
     abstract K getK();
+    /*
+     * return left subtree
+     */
     abstract BST<K,V> getLeft();
+    /*
+     * return right subtree
+     */
     abstract BST<K,V> getRight();
 
     /*
@@ -488,6 +509,7 @@ abstract class BST<K,V> extends FMap<K,V> {
     abstract BST<K,V> includeMethod(K k, V v); 
     //Both BST_Empty and BST_Include must support a comparator
     java.util.Comparator<? super K> c;
+    //Bosh BST_Empty and BST_Include have a color
     Color color;
 
      /*
@@ -588,12 +610,14 @@ abstract class BST<K,V> extends FMap<K,V> {
         }
         return f;
     }
+
+    /*
+     * checks this's color for red
+     * @return boolean indicating if the color is red
+     */
     boolean isRed() {
         return color.equals(Color.RED);
     }
-    boolean isBlack() {
-        return !isRed();
-    } 
 }
 
 /**
@@ -660,33 +684,65 @@ class BST_Include<K,V> extends BST<K,V> {
             //return t;
         }
         t = node( k0, v, left, right, color, c);
-        return balanceMethod(t);
-        //return t;
+        //return balanceMethod(t);
+        return t;
     }    
 
-    BST<K,V> balanceMethod(BST<K,V> t) { 
+    /*
+     * balanceMethod
+     * gets passed a BST and balances in accord
+     * to the four cases given in the red black
+     * tree paper. Fixes red parent invarient.
+     * note: does NOT modify this.
+     * @return BST<K,V> balanced tree
+     */ 
+    private BST<K,V> balanceMethod(BST<K,V> t) { 
 
         if ( t.getLeft().isRed() && t.getLeft().getLeft().isRed()  ) {
 
+            /*     B
+             *    / \
+             *   R
+             *  /
+             * R
+             */
             return swap(t.getLeft().getLeft().getLeft(), 
                 t.getLeft().getLeft().getRight(), t.getLeft().getRight(),
                 t.getRight(), t.getLeft().getLeft(), t.getLeft(), t); 
 
         } else if ( t.getLeft().isRed() && t.getLeft().getRight().isRed() ) {
 
+            /*     B
+             *    / \
+             *   R
+             *  / \
+             *     R
+             */
             return swap(t.getLeft().getLeft(), 
                 t.getLeft().getRight().getLeft(), 
                 t.getLeft().getRight().getRight(), t.getRight(),
                 t.getLeft(), t.getLeft().getRight(), t);
 
         } else if ( t.getRight().isRed() && t.getRight().getLeft().isRed() ) {
-
+            
+            /*     B
+             *    / \
+             *       R 
+             *      / \
+             *     R
+             */
             return swap(t.getLeft(), t.getRight().getLeft().getLeft(),
                 t.getRight().getLeft().getRight(), t.getRight().getRight(),
                 t, t.getRight().getLeft(), t.getRight() );
 
         } else if ( t.getRight().isRed() && t.getRight().getRight().isRed() ){
             
+            /*     B
+             *    / \
+             *       R 
+             *      / \
+             *         R
+             */
             return swap(t.getLeft(), t.getRight().getLeft(),
                 t.getRight().getRight().getLeft(), 
                 t.getRight().getRight().getRight(), t, t.getRight(),
@@ -695,13 +751,26 @@ class BST_Include<K,V> extends BST<K,V> {
         } 
         return (BST<K,V>)t;
     }
-    BST<K,V> swap(BST<K,V> a, BST<K,V> b, BST<K,V> c, BST<K,V> d,
+
+    /*
+     * swap
+     * preform a swap based on the a, b, c, d, x, y, z 
+     * @param BST<K,V> x7 the subtrees specified in Okasaki maintaining names
+     * @return BST<K,V> swaped based on order given in Okasaki
+     */
+    private BST<K,V> swap(BST<K,V> a, BST<K,V> b, BST<K,V> c, BST<K,V> d,
         BST<K,V> x, BST<K,V> y, BST<K,V> z) {
         
+         /*     R
+          *    / \
+          *   B   B 
+          *  / \ / \
+          */
         BST<K,V> left = node(x.getK(),x.getV(), a, b, Color.BLACK, this.c);
         BST<K,V> right = node(z.getK(), z.getV(), c , d, Color.BLACK, this.c);
         return node(y.getK(), y.getV(), left, right, Color.RED, this.c);
     }
+
     /*
      * isEmptymethod
      * tree with nodes is not empty
