@@ -1,0 +1,19 @@
+/course/cs3500su13-1/submit9 klanger@ccs.neu.edu 9 FMap.java
+Your assignment has been submitted successfully.
+Your confirmation number is c6947839
+
+
+b886616bc94b890df9d73ff31f5cdd43  FMap.java
+43da67eb64a52e5f0ad50236749627e3  Makefile
+bdfb649f520952eae161ce8bc6e95533  SUBMIT
+207e983ad442e42d5f02c889de8280fa  TestFMap.java
+4199f30772dffb81b61acfcec7ce1de1  Visitor.java
+
+total 120K
+drwxr-xr-x  2 klanger students 4.0K 2013-06-10 15:43 [0m[01;34m.[0m
+drwxr-xr-x 12 klanger students 4.0K 2013-06-10 12:55 [01;34m..[0m
+-rw-r--r--  1 klanger students  29K 2013-06-10 15:26 FMap.java
+-rw-r--r--  1 klanger students  245 2013-06-09 21:55 Makefile
+-rw-r--r--  1 klanger students  372 2013-06-10 15:43 SUBMIT
+-rw-r--r--  1 klanger students  57K 2013-06-09 21:56 TestFMap.java
+-rw-r--r--  1 klanger students  165 2013-06-09 21:55 Visitor.java
