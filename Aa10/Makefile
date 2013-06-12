@@ -18,5 +18,7 @@ clean:
 	$(RM) *.class
 
 test:
-	make && java BenchFMap iliad.txt
+	java BenchFMap iliad.txt 300 300
 
+ratio:
+	./Ratio.sh
