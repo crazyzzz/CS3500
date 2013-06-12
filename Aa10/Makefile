@@ -18,5 +18,5 @@ clean:
 	$(RM) *.class
 
 test:
-	java BenchFMap iliad.txt
+	make && java BenchFMap iliad.txt
 
