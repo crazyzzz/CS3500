@@ -7,7 +7,8 @@ JC = javac
 
 CLASSES = \
 	FMap.java \
-    BenchFMap.java
+    BenchFMap.java \
+	TestFMap.java
 
 default: classes
 
@@ -18,6 +19,8 @@ clean:
 	$(RM) *.class
 
 test:
+	java TestFMap
+bench:
 	java BenchFMap iliad.txt 300 300
 
 ratio:
