@@ -1,0 +1,87 @@
+Kevin Langer
+klanger@ccs.neu.edu
+
+Benchmark: 
+
+Commands that I used to run the becnhmark 
+		> java BenchFMap iliad.txt 300 300
+			Reading of text: 255 msec
+			Creating HashMap of words: 2157 msec
+			Creating TreeMap of words: 11981 msec
+			Creating FMap of words: 28862 msec
+			7466 words in list
+
+			Extracting words from HashMap using foreach: 71 msec
+			Extracting words from TreeMap using foreach: 61 msec
+			Extracting words from FMap using accept: 1279 msec
+
+			Sorting words using counts from HashMap: 522 msec
+			Sorting words using counts from TreeMap: 2608 msec
+			Sorting words using counts from FMap: 3754 msec
+
+			Extracting the 10 most common word counts from HashMap: 0 msec
+			Extracting the 10 most common word counts from TreeMap: 0 msec
+			Extracting the 10 most common word counts from FMap: 0 msec
+
+			9954  the
+			6625  and
+			5609  of
+			3330  to
+			2905  he
+			2537  his
+			2245  in
+			1868  him
+			1810  you
+			1807  a
+
+Ratios: 
+
+	Commands that I used to generate ratios 
+		> java BenchFMap iliad.txt 300 300 
+		> | grep -i -E 'Creating|Sorting|Extracting' | 
+		> awk '
+		> BEGIN { 
+		> 	data[0]="HashMap"; 
+		> 	data[1]="TreeMap"; 
+		> 	data[2]="FMap" 
+		> 	sum = 0;
+		> 	print "\t\t"data[0]"\t\t"data[1]"\t\t"data[2]
+		> } {
+		>	value[sum]=$(NF-1); 
+		>	if (sum%3 == 0) {
+		>			if (sum > 0)
+		>					print "\t\t"value[sum-3]/(0.0+value[sum-2])
+		>						"\t" 1 "\t"value[sum-1]/(0.0+value[sum-2])
+		>			printf $1;
+		>	}
+		>	sum+=1
+		>} END {
+		>	if(value[sum-1]) 
+		>			print "\t\t"value[sum-3]/(0.0+value[sum-2])
+		>				"\t" 1 "\t"value[sum-1]/(0.0+value[sum-2])
+		>	else 
+		>			print "\t\t1\t1\t1"
+		>} '
+
+	Results:
+							HashMap		TreeMap		FMap
+			Creating		0.180035	1			2.40898
+			Extracting		1.16393		1			20.9672
+			Sorting			0.200153	1			1.43942
+			Extracting		1			1			1
+
+Representation: 
+
+	red-black tree
+	For the comparator based map, based on Okasaki trees 
+
+Machine: 
+
+	Intel Core i5 2500k (Quad-core, 64 bit) @ 4.6 GHz 
+	8 GB RAM
+	Linux (Ubuntu release 12.10)
+	Java version 1.8.0-ea-b93
+
+
+
+
