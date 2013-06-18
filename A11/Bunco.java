@@ -19,10 +19,10 @@ public class Bunco {
     
     Bunco(int diceSize, Player[] players, boolean seeDice, boolean seeScore) {
         this.diceSize = diceSize; 
-        this.players = players; 
-        this.seeDice = seeDice; 
+        this.players = players;  
+        this.seeDice = seeDice;  
         this.seeScore = seeScore; 
-        round = 1;
+        round = 1;               
     }
     String getScore() {
         String scores = "";
@@ -34,12 +34,25 @@ public class Bunco {
         return scores;
     }
     void newRound() {
-        round++;
+        
         for (int i =0; i < players.length; i++ ) {
             players[i].newRound();
         }
-        System.out.println("Round: " + round);  
+          
+        if ( round == diceSize) {
+            printStats();
+        } else {
+            System.out.println("Round: " + round);
+        } 
+        round++;
         //new java.util.Scanner(System.in).nextLine();
+    }
+    void printStats() {
+         System.out.println();
+        for (int i = 0; i < players.length; i++) {
+            System.out.println(players[i].scoreBoard() + " ");
+        }
+        //System.out.println();
     }
     boolean playAllPlayers() {
         //for (int i = 0; i < players.length; i++) {
@@ -51,7 +64,7 @@ public class Bunco {
                 //System.out.println(players[i].getDice());  
                 //System.out.println(getScore());          
             }
-            if ( players[i].wonRound()) { 
+            if ( players[i].wonRound()) {                 
                 newRound();
             }
             if (round == diceSize+1) {
@@ -69,12 +82,14 @@ public class Bunco {
     }
        
 }
+
 class Player { 
     String name; 
     int score; 
     int roundScore;
     int buncos;
     int bigBuncos;
+    int wonRounds;
     int[] diceRoll;
     boolean seeScore;
     boolean seeDice;
@@ -111,24 +126,39 @@ class Player {
         int score = 0;
         for ( int i = 0; i < 3; i++) {
             if (diceRoll[i] == round) {
+                buncos++;
                 score++;
             }
         }
         if (score == 3) {
+            bigBuncos++;
+            buncos-=3;
             score = 5;
+        }
+        if (score == 2) {
+            buncos--;
+            score--;
         }
         this.score += score;
         this.roundScore += score;
         return (score != 0 && roundScore < 22);
     }   
     public boolean wonRound() {
-        return roundScore >= 21;
+        if (roundScore >= 21) {
+            wonRounds++;
+            return true;
+        }
+        return false;
     }
     public void newRound() {
         roundScore = 0;
     }
     public String getDice() {
         return diceRoll[0] + " " + diceRoll[1] + " " + diceRoll[2];
+    }
+    public String scoreBoard() {
+        return this.toString() + "\n\tBuncos: " + buncos 
+            + "\n\tBig Buncos: " + bigBuncos + "\n\trounds won " + wonRounds;     
     }
     public String toString() {
         String toString = name;
@@ -138,3 +168,4 @@ class Player {
         return toString;
     }
 }
+
