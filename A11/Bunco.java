@@ -39,6 +39,7 @@ public class Bunco {
             players[i].newRound();
         }
         System.out.println("Round: " + round);  
+        new java.util.Scanner(System.in).nextLine();
     }
     boolean playAllPlayers() {
         //for (int i = 0; i < players.length; i++) {
@@ -92,12 +93,12 @@ class Player {
         getRoll(diceSize);
         if (seeDice) {
             System.out.println(getDice());
-            new java.util.Scanner(System.in).nextLine();
+            //new java.util.Scanner(System.in).nextLine();
         }        
         scored = scoreRoll(round);
         if (seeScore) {
             System.out.println(this);
-            new java.util.Scanner(System.in).nextLine();
+            //new java.util.Scanner(System.in).nextLine();
         }
         return  scored;
     }
@@ -118,7 +119,7 @@ class Player {
         }
         this.score += score;
         this.roundScore += score;
-        return (score != 0);
+        return (score != 0 && roundScore < 22);
     }   
     public boolean wonRound() {
         return score >= 21;
