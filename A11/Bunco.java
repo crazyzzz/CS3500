@@ -39,7 +39,7 @@ public class Bunco {
             players[i].newRound();
         }
         System.out.println("Round: " + round);  
-        new java.util.Scanner(System.in).nextLine();
+        //new java.util.Scanner(System.in).nextLine();
     }
     boolean playAllPlayers() {
         //for (int i = 0; i < players.length; i++) {
@@ -122,7 +122,7 @@ class Player {
         return (score != 0 && roundScore < 22);
     }   
     public boolean wonRound() {
-        return score >= 21;
+        return roundScore >= 21;
     }
     public void newRound() {
         roundScore = 0;
