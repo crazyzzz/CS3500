@@ -38,20 +38,25 @@ public class Bunco {
         for (int i =0; i < players.length; i++ ) {
             players[i].newRound();
         }
+        System.out.println("Round: " + round);  
     }
     boolean playAllPlayers() {
-        for (int i = 0; i < players.length; i++) {
+        //for (int i = 0; i < players.length; i++) {
+        int count = 0;
+        int i;
+        while (round < 22) {
+            i = count%players.length;
             while ( players[i].play(diceSize,round) ) { 
                 //System.out.println(players[i].getDice());  
                 //System.out.println(getScore());          
             }
             if ( players[i].wonRound()) { 
-                System.out.println("Round: " + round);  
                 newRound();
             }
             if (round == diceSize+1) {
                 return false;
             }
+            count++;
         }
         return true;
     }
@@ -83,22 +88,25 @@ class Player {
         diceRoll = new int[3];
     }
     public boolean play(int diceSize, int round) {
+        boolean scored;
         getRoll(diceSize);
         if (seeDice) {
             System.out.println(getDice());
+            new java.util.Scanner(System.in).nextLine();
         }        
-        scoreRoll(round);
+        scored = scoreRoll(round);
         if (seeScore) {
             System.out.println(this);
+            new java.util.Scanner(System.in).nextLine();
         }
-        return roundScore > 21;
+        return  scored;
     }
     private void getRoll(int diceSize) {   
         diceRoll[0] = (int) ((Math.random()*diceSize))+1;
         diceRoll[1] = (int) ((Math.random()*diceSize))+1;
         diceRoll[2] = (int) ((Math.random()*diceSize))+1;
     }
-    private void scoreRoll(int round) {
+    private boolean scoreRoll(int round) {
         int score = 0;
         for ( int i = 0; i < 3; i++) {
             if (diceRoll[i] == round) {
@@ -110,6 +118,7 @@ class Player {
         }
         this.score += score;
         this.roundScore += score;
+        return (score != 0);
     }   
     public boolean wonRound() {
         return score >= 21;

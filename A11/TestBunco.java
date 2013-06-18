@@ -5,7 +5,7 @@ public class TestBunco {
         players[1] = Bunco.player("Ches");
         players[2] = Bunco.player("Portia");
         players[3] = Bunco.player("Todd");
-        Bunco b = new Bunco(20,players,true,true);
+        Bunco b = new Bunco(6,players,true,true);
         b.play();
     }
 }
