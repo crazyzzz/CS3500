@@ -31,7 +31,8 @@ public class PlayBunco {
         int diceSize = getDiceSides(in); //how many sides (6-26)?
         //Instantiate the environment
         Bunco b = new Bunco(diceSize,players,seeDice,seeScore);
-        getNames(players,b,in); //Fill in all the player-names (previously left blank)
+        //Fill in all the player-names (previously left blank)
+        getNames(players,b,in); 
         b.play(); //Play the entire game
         System.out.println(b); //print stats
     }

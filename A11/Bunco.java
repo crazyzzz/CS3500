@@ -247,24 +247,32 @@ class Player extends Score {
     }
     /*
      * After a roll, evalulate how many points are aquired.
-     * Can increment points by 0, 1, or 5 on any call.
+     * Can increment points by 0, 1, 2, 3, or 5 on any call.
      * Also increments bunco and bigBunco accordingly.
      * Will never exced 21 round points. 
      * will return false when the player's turn is over
      */
     private boolean scoreRoll(int round) {
         int score = 0;
+        boolean littleBunco = true;
+
         for ( int i = 0; i < NUMBER_OF_DICE; i++) {
             if (dice.getDie(i) == round) {
+                littleBunco = false;
                 score++;
+            } else if ( i > 0 && dice.getDie(i) != dice.getDie(i-1) ) {
+                littleBunco = false;
             }
         }
-        if (score < 3 && score > 0) {
-            buncos++;
-            score = 1;
-        } else if (score == 3) {
+        
+        if (score == 3) {
             bigBuncos++;
             score = 5;
+            //System.out.println("Big bunco!");
+        } else if ( littleBunco ) {
+            buncos++;
+            score = 3;
+            //System.out.println("Little bunco!");
         }
         
         this.score += score;
@@ -272,7 +280,7 @@ class Player extends Score {
         if (roundScore > ROUND_POINTS) {
             this.score += ROUND_POINTS-roundScore;
         }
-        return (score != 0 && roundScore <= ROUND_POINTS);
+        return (score != 0 && score != 3 && roundScore <= ROUND_POINTS);
     }   
 
     /*
