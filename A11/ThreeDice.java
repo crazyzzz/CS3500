@@ -1,3 +1,12 @@
+/*
+ * Kevin Langer
+ * Anders Dahl
+ * Valerie Charry
+ * A11 - Bunco
+ *
+ *
+ */
+
 public class ThreeDice { 
     int[] diceRoll = new int[3];
     int diceSize;
@@ -23,7 +32,8 @@ public class ThreeDice {
         return diceRoll[index];
     } 
     public String toString() {
-        return diceRoll[0] + " " + diceRoll[1] + " " + diceRoll[2];
+        return "Roll: [ " + diceRoll[0] + " " 
+            + diceRoll[1] + " " + diceRoll[2] + " ]";
     }
 	
 }

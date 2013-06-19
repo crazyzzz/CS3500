@@ -2,9 +2,10 @@
  * Kevin Langer
  * Anders Dahl
  * Valerie Charry
- * A11 - Bunco
- *
- *
+ * 
+ * langer.k@husky.neu.edu
+ * charry.v@husky.neu.edu
+ * dahl.a@husky.neu.edu
  */
 
 public class Bunco {
@@ -14,23 +15,17 @@ public class Bunco {
     boolean seeDice;
     boolean seeScore;
     int round;
-    
+    ScoreBoard s;
+
     Bunco(int diceSize, Player[] players, boolean seeDice, boolean seeScore) {
         dice = new ThreeDice(diceSize);
+        s = new ScoreBoard(players);
         this.players = players;  
         this.seeDice = seeDice;  
         this.seeScore = seeScore; 
         round = 0;               
     }
-    String getScore() {
-        String scores = "";
-        if ( seeScore ) {
-            for (int i = 0; i < players.length; i++ ) {
-                scores += players[i] + "\n";
-            }
-        }
-        return scores;
-    }
+    
     void newRound() {
         round++;
         for (int i =0; i < players.length; i++ ) {
@@ -41,7 +36,7 @@ public class Bunco {
         } else {
             System.out.println("Round: " + round);
         } 
-        
+            
         //new java.util.Scanner(System.in).nextLine();
     }
     
@@ -53,23 +48,20 @@ public class Bunco {
         while (round < dice.getSize()+1) {
             i = count%players.length;
             while ( players[i].turn(round) ) { }
-            if ( players[i].wonRound()) {                 
+            if ( players[i].wonRound()) {
+                if (seeScore) {
+                    System.out.println(s.printStats());
+                }                 
                 newRound();
             }
             count++;
         }
     }
     public Player player(String name) {
-        return new Player(name, dice, seeScore, seeDice );
-    }
-
-    public static Player player(String name, 
-    boolean seeScore, boolean seeDice, int diceSize) {
-        return new Player(name, new ThreeDice(diceSize), seeScore, seeDice );
+        return new Player(name, dice, seeDice );
     }
 
     public String toString() {
-        ScoreBoard s = new ScoreBoard(players);
         return s.toString();
     }      
 }
@@ -109,6 +101,9 @@ class Score {
         }
         return false;
     }
+    public int hashCode() {
+        return getName().hashCode();
+    }
 
 }
 class Player extends Score { 
@@ -120,7 +115,7 @@ class Player extends Score {
     boolean seeScore;
     boolean seeDice;
 
-    Player(String name, ThreeDice dice, boolean seeScore, boolean seeDice) {
+    Player(String name, ThreeDice dice, boolean seeDice) {
         this.name = name; 
         this.seeScore = seeScore;
         this.seeDice = seeDice;
@@ -140,10 +135,7 @@ class Player extends Score {
             //new java.util.Scanner(System.in).nextLine();
         }        
         scored = scoreRoll(round);
-        if (seeScore) {
-            System.out.println(this);
-            //new java.util.Scanner(System.in).nextLine();
-        }
+        
         return  scored;
     }
     
@@ -161,9 +153,12 @@ class Player extends Score {
             bigBuncos++;
             score = 5;
         }
-
+        
         this.score += score;
         this.roundScore += score;
+        if (roundScore > ROUND_POINTS) {
+            this.score += ROUND_POINTS-roundScore;
+        }
         return (score != 0 && roundScore <= ROUND_POINTS);
     }   
     public boolean wonRound() {
@@ -175,11 +170,6 @@ class Player extends Score {
     }
     public void newRound() {
         roundScore = 0;
-    }
-   
-    public String scoreBoard() {
-        return this.toString() + "\n\tBuncos: " + buncos 
-            + "\n\tBig Buncos: " + bigBuncos + "\n\trounds won " + wonRounds;     
     }
     
 }

@@ -1,8 +1,20 @@
+/*
+ * Kevin Langer
+ * Anders Dahl
+ * Valerie Charry
+ * A11 - Bunco
+ *
+ *
+ */
+
 public class ScoreBoard {
+
     Score[] scores; 
+
     ScoreBoard(Score[] scores) {
         this.scores = scores;
     }
+
     String totalScoreWinner() {
         int max = -1;
         String total = "Score winner!\n\t";
@@ -19,6 +31,7 @@ public class ScoreBoard {
         total += "\n";
         return total;
     }
+
     String roundsWinner() {
         int max = -1;
         String total = "Score rounds winner!\n\t";
@@ -36,6 +49,7 @@ public class ScoreBoard {
         total += "\n";
         return total;
     }
+
     String littleBuncoWinner() {
         int max = -1;
         String total = "Score bunco!\n\t";
@@ -52,6 +66,7 @@ public class ScoreBoard {
         total += "\n";
         return total;
     }
+
     String bigBuncoWinner() {
         int max = -1;
         String total = "Score big bunco winner!\n\t";
@@ -69,13 +84,15 @@ public class ScoreBoard {
         total += "\n";
         return total;
     }
-    String printStats() {
+
+    public String printStats() {
         String total = "\n";
         for( int i = 0; i < scores.length; i++) {
             total += scores[i] + "\n";
         }
         return total+"\n";
     }
+
     public String toString() {
         String total = 
         printStats() +
@@ -84,7 +101,6 @@ public class ScoreBoard {
         littleBuncoWinner() +
         bigBuncoWinner();
 
-        return total;
-        
+        return total;  
     }
 }

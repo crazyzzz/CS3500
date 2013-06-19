@@ -1,6 +1,28 @@
+/*
+ * Kevin Langer
+ * Anders Dahl
+ * Valerie Charry
+ * A11 - Bunco
+ *
+ *
+ */
+
 import java.util.Scanner;
 
 public class PlayBunco {
+
+    public static void main(String[] args) {
+        
+        Scanner in = new Scanner(System.in);
+        Player[] players = getEmptyPlayers(in);
+        boolean seeDice = seeDice(in);
+        boolean seeScore = seeScore(in);
+        int diceSize = getDiceSides(in);
+        Bunco b = new Bunco(diceSize,players,seeDice,seeScore);
+        getNames(players,b,in);
+        b.play();
+        System.out.println(b);
+    }
 
     static Player[] getEmptyPlayers(Scanner in) {
         System.out.print("Please enter the number of players in this game: ");
@@ -15,42 +37,53 @@ public class PlayBunco {
         System.out.println();
         return players;
     }
+
     static boolean seeDice(Scanner in) {
         while (true) {
-            System.out.print("Would you like to see the dice after each roll [Y/N]: ");
+            System.out.print(
+                "Would you like to see the dice after each roll [Y/N]: ");
             String lineInput = in.nextLine().toLowerCase();
             if (  lineInput.indexOf('y') == 0 ) {
                 System.out.println();
                 return true;
-            }
-            if ( lineInput.indexOf('n') == 0 ) {
+            } else if ( lineInput.indexOf('n') == 0 ) {
                 break;
+            } else {
+                System.out.println("Invalid input");
             }
             System.out.println();
         }
         return false;
     }
+
     static boolean seeScore(Scanner in) {
         while (true) {
-            System.out.print("Would you like to see the score after each roll [Y/N]: ");
+            System.out.print(
+                "Would you like to see the score after each round [Y/N]: ");
             String lineInput = in.nextLine().toLowerCase();
             if (  lineInput.indexOf('y') == 0 ) {
                 System.out.println();
                 return true;
-            }
-            if ( lineInput.indexOf('n') == 0 ) {
+            } else if ( lineInput.indexOf('n') == 0 ) {
                 break;
+            } else {
+                System.out.println("Invalid input");
             }
             System.out.println();
         }
         return false;
     }
+
     static int getDiceSides(Scanner in) {
+        int diceSize;
+        do {
         System.out.print("Pick a dice size between 6-26: ");
-        int diceSize = in.nextInt();
+        diceSize = in.nextInt();
         in.nextLine();
+        } while (diceSize < 6 || diceSize > 26);
         return diceSize;
     }
+
     static void getNames(Player[] players, Bunco b, Scanner in) {
         int count = 0;
         boolean dup = false; 
@@ -73,16 +106,5 @@ public class PlayBunco {
             }
         }
     }
-    public static void main(String[] args) {
-        
-        Scanner in = new Scanner(System.in);
-        Player[] players = getEmptyPlayers(in);
-        boolean seeDice = seeDice(in);
-        boolean seeScore = seeScore(in);
-        int diceSize = getDiceSides(in);
-        Bunco b = new Bunco(diceSize,players,seeDice,seeScore);
-        getNames(players,b,in);
-        b.play();
-        System.out.println(b);
-    }
+    
 }
