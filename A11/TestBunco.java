@@ -1,11 +1,11 @@
 public class TestBunco {
     public static void main(String[] args) {
         Player[] players = new Player[4];
-        players[0] = Bunco.player("Kevin");
-        players[1] = Bunco.player("Ches");
-        players[2] = Bunco.player("Portia");
-        players[3] = Bunco.player("Todd");
-        Bunco b = new Bunco(6,players,true,true);
+        Bunco b = new Bunco(8,players,false,false);
+        players[0] = b.player("Kevin");
+        players[1] = b.player("Ches");
+        players[2] = b.player("Portia");
+        players[3] = b.player("Todd");
         b.play();
     }
 }

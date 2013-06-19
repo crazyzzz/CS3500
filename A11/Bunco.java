@@ -11,18 +11,18 @@ import java.lang.String;
 import java.lang.Math;
 
 public class Bunco {
-    int diceSize; 
+    ThreeDice dice;
     Player[] players;
     boolean seeDice;
     boolean seeScore;
     int round;
     
     Bunco(int diceSize, Player[] players, boolean seeDice, boolean seeScore) {
-        this.diceSize = diceSize; 
+        dice = new ThreeDice(diceSize);
         this.players = players;  
         this.seeDice = seeDice;  
         this.seeScore = seeScore; 
-        round = 1;               
+        round = 0;               
     }
     String getScore() {
         String scores = "";
@@ -34,17 +34,17 @@ public class Bunco {
         return scores;
     }
     void newRound() {
-        
+        round++;
         for (int i =0; i < players.length; i++ ) {
             players[i].newRound();
         }
           
-        if ( round == diceSize) {
+        if ( round > dice.getSize()) {
             printStats();
         } else {
             System.out.println("Round: " + round);
         } 
-        round++;
+        
         //new java.util.Scanner(System.in).nextLine();
     }
     void printStats() {
@@ -54,31 +54,22 @@ public class Bunco {
         }
         //System.out.println();
     }
-    boolean playAllPlayers() {
-        //for (int i = 0; i < players.length; i++) {
+    public void play() {
         int count = 0;
         int i;
-        while (round < 22) {
+        newRound();
+
+        while (round < dice.getSize()+1) {
             i = count%players.length;
-            while ( players[i].play(diceSize,round) ) { 
-                //System.out.println(players[i].getDice());  
-                //System.out.println(getScore());          
-            }
+            while ( players[i].turn(round) ) { }
             if ( players[i].wonRound()) {                 
                 newRound();
             }
-            if (round == diceSize+1) {
-                return false;
-            }
             count++;
         }
-        return true;
     }
-    void play() {
-        while (playAllPlayers()) { }
-    }
-    public static Player player(String name) {
-        return new Player(name, true, true);
+    public Player player(String name) {
+        return new Player(name, dice, seeScore, seeDice );
     }
        
 }
@@ -90,24 +81,25 @@ class Player {
     int buncos;
     int bigBuncos;
     int wonRounds;
-    int[] diceRoll;
+    ThreeDice dice; 
+
     boolean seeScore;
     boolean seeDice;
 
-    Player(String name, boolean seeScore, boolean seeDice) {
+    Player(String name, ThreeDice dice, boolean seeScore, boolean seeDice) {
         this.name = name; 
         this.seeScore = seeScore;
         this.seeDice = seeDice;
+        this.dice = dice;
         score = 0;
         buncos = 0;
         bigBuncos = 0;
-        diceRoll = new int[3];
     }
-    public boolean play(int diceSize, int round) {
+    public boolean turn(int round) {
         boolean scored;
-        getRoll(diceSize);
+        dice.roll();
         if (seeDice) {
-            System.out.println(getDice());
+            System.out.println(dice);
             //new java.util.Scanner(System.in).nextLine();
         }        
         scored = scoreRoll(round);
@@ -117,15 +109,11 @@ class Player {
         }
         return  scored;
     }
-    private void getRoll(int diceSize) {   
-        diceRoll[0] = (int) ((Math.random()*diceSize))+1;
-        diceRoll[1] = (int) ((Math.random()*diceSize))+1;
-        diceRoll[2] = (int) ((Math.random()*diceSize))+1;
-    }
+    
     private boolean scoreRoll(int round) {
         int score = 0;
         for ( int i = 0; i < 3; i++) {
-            if (diceRoll[i] == round) {
+            if (dice.getDie(i) == round) {
                 buncos++;
                 score++;
             }
@@ -153,9 +141,7 @@ class Player {
     public void newRound() {
         roundScore = 0;
     }
-    public String getDice() {
-        return diceRoll[0] + " " + diceRoll[1] + " " + diceRoll[2];
-    }
+   
     public String scoreBoard() {
         return this.toString() + "\n\tBuncos: " + buncos 
             + "\n\tBig Buncos: " + bigBuncos + "\n\trounds won " + wonRounds;     
@@ -166,6 +152,12 @@ class Player {
             toString = toString + " score: " + score;
         }
         return toString;
+    }
+    public boolean equals(Object o) {
+        if (o instanceof Player) {
+            return ((Player) o).name.equals(this.name);
+        }
+        return false;
     }
 }
 

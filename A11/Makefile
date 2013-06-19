@@ -7,7 +7,8 @@ JC = javac
 
 CLASSES = \
 	Bunco.java \
-	TestBunco.java
+	TestBunco.java \
+	ThreeDice.java
 
 default: classes
 
