@@ -90,7 +90,7 @@ public class ScoreBoard {
      */
     String littleBuncoWinner() {
         int max = -1;
-        String total = "Score bunco!\n\t";
+        String total = "Score little bunco!\n\t";
         for (int i = 0; i < scores.length; i++) {
             //find max
             if (scores[i].getBuncos() > max) {
@@ -101,7 +101,7 @@ public class ScoreBoard {
             //print all with that maximum value (including ties)
             if(scores[i].getBuncos() == max) {
                 total += scores[i].getName() 
-                + " with " + max + " buncos\n\t";
+                + " with " + max + " little buncos\n\t";
             }
         }
         total += "\n";
