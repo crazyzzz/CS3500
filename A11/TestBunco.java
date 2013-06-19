@@ -7,5 +7,6 @@ public class TestBunco {
         players[2] = b.player("Portia");
         players[3] = b.player("Todd");
         b.play();
+        System.out.println(b);
     }
 }

@@ -7,10 +7,8 @@
  *
  */
 
-import java.lang.String;
-import java.lang.Math;
-
 public class Bunco {
+
     ThreeDice dice;
     Player[] players;
     boolean seeDice;
@@ -40,20 +38,13 @@ public class Bunco {
         }
           
         if ( round > dice.getSize()) {
-            printStats();
         } else {
             System.out.println("Round: " + round);
         } 
         
         //new java.util.Scanner(System.in).nextLine();
     }
-    void printStats() {
-         System.out.println();
-        for (int i = 0; i < players.length; i++) {
-            System.out.println(players[i].scoreBoard() + " ");
-        }
-        //System.out.println();
-    }
+    
     public void play() {
         int count = 0;
         int i;
@@ -71,16 +62,53 @@ public class Bunco {
     public Player player(String name) {
         return new Player(name, dice, seeScore, seeDice );
     }
-       
+    public String toString() {
+        ScoreBoard s = new ScoreBoard(players);
+        return s.toString();
+    }      
 }
 
-class Player { 
-    String name; 
+class Score {
+
+    String name;
+
     int score; 
     int roundScore;
     int buncos;
     int bigBuncos;
     int wonRounds;
+    
+    public String getName() {
+        return name;
+    }
+    public int getScore() {
+        return score;
+    }
+    public int getBuncos() {
+        return buncos;
+    }
+    public int getBigBuncos() {
+        return bigBuncos;
+    }
+    public int getWonRounds() {
+        return wonRounds;
+    }
+
+    public String toString() {
+        return name + " has " + score + " points";
+    }
+    public boolean equals(Object o) {
+        if (o instanceof Player) {
+            return ((Player) o).name.equals(this.name);
+        }
+        return false;
+    }
+
+}
+class Player extends Score { 
+
+    private static final int ROUND_POINTS = 21; 
+
     ThreeDice dice; 
 
     boolean seeScore;
@@ -98,6 +126,9 @@ class Player {
     public boolean turn(int round) {
         boolean scored;
         dice.roll();
+        if (seeDice || seeScore) {
+            System.out.println(name + "'s turn!");
+        }
         if (seeDice) {
             System.out.println(dice);
             //new java.util.Scanner(System.in).nextLine();
@@ -114,25 +145,23 @@ class Player {
         int score = 0;
         for ( int i = 0; i < 3; i++) {
             if (dice.getDie(i) == round) {
-                buncos++;
                 score++;
             }
         }
-        if (score == 3) {
+        if (score < 3 && score > 0) {
+            buncos++;
+            score = 1;
+        } else if (score == 3) {
             bigBuncos++;
-            buncos-=3;
             score = 5;
         }
-        if (score == 2) {
-            buncos--;
-            score--;
-        }
+
         this.score += score;
         this.roundScore += score;
-        return (score != 0 && roundScore < 22);
+        return (score != 0 && roundScore <= ROUND_POINTS);
     }   
     public boolean wonRound() {
-        if (roundScore >= 21) {
+        if (roundScore >= ROUND_POINTS) {
             wonRounds++;
             return true;
         }
@@ -146,18 +175,8 @@ class Player {
         return this.toString() + "\n\tBuncos: " + buncos 
             + "\n\tBig Buncos: " + bigBuncos + "\n\trounds won " + wonRounds;     
     }
-    public String toString() {
-        String toString = name;
-        if (seeScore) {
-            toString = toString + " score: " + score;
-        }
-        return toString;
-    }
-    public boolean equals(Object o) {
-        if (o instanceof Player) {
-            return ((Player) o).name.equals(this.name);
-        }
-        return false;
-    }
+    
 }
+
+    
 
