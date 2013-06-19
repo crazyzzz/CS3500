@@ -7,9 +7,9 @@ JC = javac
 
 CLASSES = \
 	Bunco.java \
-	TestBunco.java \
+	PlayBunco.java \
 	ThreeDice.java \
-	ScoreBoard.java
+	ScoreBoard.java 
 
 default: classes
 
@@ -20,4 +20,4 @@ clean:
 	$(RM) *.class && $(RM) *~
 
 test:
-	java TestBunco
+	java PlayBunco

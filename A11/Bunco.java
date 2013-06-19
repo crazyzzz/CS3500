@@ -62,6 +62,12 @@ public class Bunco {
     public Player player(String name) {
         return new Player(name, dice, seeScore, seeDice );
     }
+
+    public static Player player(String name, 
+    boolean seeScore, boolean seeDice, int diceSize) {
+        return new Player(name, new ThreeDice(diceSize), seeScore, seeDice );
+    }
+
     public String toString() {
         ScoreBoard s = new ScoreBoard(players);
         return s.toString();
