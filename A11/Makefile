@@ -21,3 +21,5 @@ clean:
 
 test:
 	java PlayBunco
+play:
+	java PlayBunco

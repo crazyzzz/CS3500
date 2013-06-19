@@ -1,0 +1,27 @@
+--Bunco Game--
+
+ * Kevin Langer
+ * Anders Dahl
+ * Valerie Charry
+ * 
+ * langer.k@husky.neu.edu
+ * charry.v@husky.neu.edu
+ * dahl.a@husky.neu.edu
+ * 
+ * Group 1
+ 
+--Install--
+
+	Linux/GNU/BSD/Mac:
+	Simply type 'make' into the compand line
+
+	Windows:
+	If GNU make is not installed type 
+	'javac Bunco.java ThreeDice.java ScoreBoard.java PlayBunco.java`
+
+--Run--
+	Linux/GNU/BSD/Mac: 
+	Simply type 'make test' into the command line
+	 
+	Windows:
+	'java PlayBunco'
