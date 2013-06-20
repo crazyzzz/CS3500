@@ -2,30 +2,24 @@
 
 -- CS3500 --
 
-  Object Oriented Design 
+    Object Oriented Design 
 
 -- Warning --
 
-  If you are currently enrolled in CS3500... 
-  
-  **TURN BACK NOW**
-  
-  This repository is not for you.
-  
-  I ran out of private repositories.
-  
+    If you are currently enrolled in CS3500... 
+    **TURN BACK NOW**
+    This repository is not for you.
+    I ran out of private repositories.
+
 -- Assignments --
 
-  Assignments 1-11
-  
-  Assignment 7 and 11 are group assignments
-  
-  All contain make files
+    Assignments 1-11
+    Assignment 7 and 11 are group assignments
+    All contain make files
   
 
 -- Notes --
 
-  midterm notes
-  
-  final notes
+    midterm notes
+    final notes
   
