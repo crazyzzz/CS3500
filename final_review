@@ -1,0 +1,488 @@
+• Big-O review
+
+• Binary Search Tree
+
+• Designing Specifications
+
+• Theorem: If f(x) is a polynomial function of x of degree k, with positive leading coefficient and restricted to non-negative x, then O(f) = O(xk).
+
+• Preconditions, Postconditions, and Invariants
+
+• Abstraction Function:
+
+Maps a concrete rep of an ADT to the abstract value of that ADT.
+
+• Design patterns
+
+    Elements of:
+
+        pattern name
+
+        the problem
+
+        the solution
+
+        the consequence
+
+Creational Pattern
+
+    Factory method
+
+        Method call for safe creation of an instance without calling ‘new’.
+
+    Singleton
+
+        Cache instantiations if they are not going to change and will be reused  
+
+            I.E. single ‘empty’ instead of passing null
+
+    Abstract factory (wat?)
+
+        Tell the world you are eventually going to implement a factory?
+
+FMap.create() instead of FMap.include() and FMap.empty(), user don’t know shit
+
+Structural
+
+    Composite
+
+Behavioral
+
+    Iterator
+
+    Visitor
+
+• Visitor Pattern
+
+    Definition: Represents an operation  to be performed on the elements of abn object         structure. Visitor lets you define a new operation without changing the classes of         elements on which it operates.
+
+    why use:
+
+        -Distinct and unrelated operations to perform on an object
+
+        -Object structures rarely change but add new operations often
+
+        - many classes of objects
+
+    benefits:
+
+        -easily add new operations
+
+        - gather and separate related operations
+
+        - accumulating state
+
+• Code Quality
+
+    -length
+
+    -readability
+
+    -clean/tangled
+
+    -elegance
+
+    -modularity
+
+• Software Quality
+
+    -Correctness
+
+    -Reliability
+
+    -Robustness: failing properly
+
+    -Usability
+
+    -Maintainability
+
+    -Reusability
+
+    -Portability
+
+    -Efficiency
+
+• Reliability Testing
+
+• Estimating probability of hashCode() collisions
+
+    -probability that f1.hashCode() == f2.hashCode() when f1 != f2
+
+• Computing better hash codes
+
+    -Spread hashcode maximum range
+
+        -Center hashcode
+
+    -Should not take many cycles to compute
+
+    - Use Xor or ADD for each element
+
+• Debugging
+
+    -do not make random changes
+
+    -write test that reproduce the bug
+
+    - figure out what went wrong : inspectors, breakpoints,
+
+    - figure out what went wrong
+
+• Amortized time for tree insertion:
+
+the time required to perform a sequence of data - structure operations is averaged over all the operations performed
+
+• Worst case, average case, best case efficiency
+
+    Worst case:
+
+        Big-O
+
+            I.E. search BST where elements are added in order
+
+    Average case:
+
+        Big-O with purely random input
+
+            I.E. search BST where elements are added randomly random
+
+    Best case:
+
+        Big-O with simplified input.
+
+            I.E search tree with one element
+
+• Red-Black Trees
+
+    -no red node has a red child
+
+-every path from the root to an empty tree/node contains the same number of black nodes
+
+Theorem: the longest possible path from the root is no longer than twice as long as the shortest path
+
+RB tree with n nodes has max height of : 2*lg(n+1)
+
+• 2-3 Trees
+
+    -can have  a 2-node or 3-node
+
+2-node has a single key and 2 children
+
+3-node has 2 ordered keys and 3 children
+
+-Always height balanced
+
+-Builds up
+
+• AVL Trees
+
+Balance factors:  difference between the height of the left node and height of the right node
+
+    Always has a balance factor of [-1,0,1]
+
+• Reuse
+
+- Interchangeable Parts
+
+- parametric polymorphism
+
+- software quality
+
+-Inheritance      (inclusion polymorphism, ad hoc polymorphism)
+
+-composition
+
+-implementation
+
+• Reuse - origins of C, C++, Java, C#
+
+    -Java is difficult to reuse because!
+
+        primitive and reference type
+
+        wrapper class
+
+        parametric polymorphism restricted to reference type
+
+    -C# difficult to reuse because!
+
+        value versus reference type
+
+        value types can be mutable
+
+• Examples of reusable software
+
+    -Integer Arithmetic and Floating(fixed)-point libraries
+
+    -I/O libraries
+
+    -Operating Systems
+
+    -Data Structures
+
+    -Unicode Library
+
+    -GUI libraries
+
+• Parametric Polymorphism
+
+    -Generic types. Less specific types, yet still type safe.
+
+• Inheritance
+
+    -Ad-hoc polymorphism
+
+        function overloading
+
+    -Inclusion polymorphism
+
+        subclassing and casting to superclass
+
+        I.E. Same method visible to client different sibling class implementation
+
+• Dynamic Method Dispatch
+
+    Overloading
+
+Method types are unknown at compile time, as a result, which overloading method will be called is dispatched at runtime.
+
+Overriding
+
+        At runtime the compiler knows which overriden function to call
+
+        Knows to use subclass method instead of superclass
+
+• Fragile base class
+
+    Modification of derived class could break base class.
+
+    No way to see if it will break base class, as modification may be safe for derived class
+
+• Composition
+
+    Instead of extending use internally
+
+    Making complicated modules out of simple ones?
+
+• Implementation
+
+• Reusable data structures and algorithms in Java
+
+    List
+
+    Array
+
+• Immutable vs. Mutable
+
+Mutable
+
+A data type that when an instance is changed other references to the data type change. An example would be an Array where a[0] = 1 will affect all of a.
+
+    Immutable
+
+A data type where a new instantiation is given for each value. An example would be the String object which returns a new string for every operation that modifies.
+
+• Turing Award winners
+
+John McCarthy (1971)
+
+    Lisp
+
+    ALGOL
+
+Edsger W. Dijkstra (1972)
+
+    Dijkstra algorithm: shortest path for graphs problem
+
+    COBOL sucks
+
+Donald (“Don”) Ervin Knuth (1974)
+
+    Analysis of Algorithms
+
+John Backus (1977)
+
+    FORTRAN
+
+Kenneth Lane Thompson and Dennis M. Ritchie (1983)
+
+    B
+
+    C
+
+    Unix
+
+Frederick (“Fred”) Brooks (1999)
+
+    Brooks Law: adding manpower to a late project makes it later
+
+        1/3 design/planning, 1/6 programming, 1/2 debugging
+
+Ole-Johan Dahl and Kristen Nygaard (2001)
+
+    co-invented object oriented design
+
+    Simula: first OOP
+
+Alan Kay (2003)
+
+    OOP (small-talk)
+
+    GUI
+
+Peter Naur (2005)
+
+    ALGOL 60
+
+Barbara Liskov (2008)
+
+    precursor to OOD
+
+• Assignments 1-11
+
+• Law of Demeter (Do CS people even know the definition of a ‘law’?)
+
+Each unit should have only limited knowledge about other units: only units "closely" related to the current unit. Each unit should only talk to its friends; don't talk to strangers. Only talk to your immediate friends.
+
+• Mel
+
+    the Story of Mel   
+
+        real programmers write in assembly, not FORTRAN
+
+        real programmers don't eat quiche
+
+
+Languages:
+
+Fortran
+
+    John Backus
+
+    first successful high-level language
+
+Algol 58, 60
+
+    intended to be THE LANGUAGE, machine independent
+
+    Backus-Naur Form (BNF)
+
+Lisp
+
+John McCarthy
+
+Cobol
+
+Grace Hopper
+
+Peter Naur
+
+business language
+
+Simula-67
+
+    First OOP
+
+Algol 68
+
+Smalltalk-72, 80
+
+    Alan Key
+
+    Coined the term Object Oriented
+
+C
+
+    Ken Thompson & Denis Ritchie
+
+Scheme
+
+    Guy Steele, Gerry Sussman
+
+Smalltalk-80
+
+C++
+
+Bjarne Stroustrup
+
+Object oriented extention of C, superset of C
+
+not made to be very popular
+
+Java
+
+James Gosling, SUN
+
+Pre-order:
+
+    Visit the root.
+
+    Traverse the left subtree.
+
+    Traverse the right subtree.
+
+In-order (symmetric):
+
+    Traverse the left subtree.
+
+    Visit the root.
+
+    Traverse the right subtree.
+
+Post-order:
+
+    Traverse the left subtree.
+
+    Traverse the right subtree.
+
+    Visit the root.
+
+
+Old Material:
+
+Total Order:
+
+               Asymmetry: a <= b and b <= a then a = b
+
+               Transitivity a <= b b <= c then a <=c
+
+               Trichotomy: a is either < b or >b or a == b
+
+    Efficiency:
+
+               Big(O) bounded above
+
+               Big Omega bounded below
+
+               Big Theta bounded between
+
+    Refactoring:
+
+               Private classes
+
+               Singleton
+
+               Private members
+
+               Using null
+
+               Absorb subclasses in baseclass
+
+    Modifiers
+
+        Private:
+
+                   Only in class
+
+Public:
+
+                   Everywhere
+
+Protected:
+
+                   In class, package, or subclass
+
+Default:
+
+                   In class, or package
+
