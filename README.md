@@ -7,17 +7,25 @@
 -- Warning --
 
   If you are currently enrolled in CS3500... 
+  
   **TURN BACK NOW**
+  
   This repository is not for you.
+  
   I ran out of private repositories.
   
 -- Assignments --
 
   Assignments 1-11
+  
   Assignment 7 and 11 are group assignments
+  
   All contain make files
+  
 
 -- Notes --
 
   midterm notes
+  
   final notes
+  
