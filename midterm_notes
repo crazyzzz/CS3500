@@ -1,0 +1,61 @@
+Mutable: 
+A data type that when an instance is changed other references to the data type change. An example would be an Array where a[0] = 1 will affect all of a. 
+Immutable: 
+A data type where a new instantiation is given for each value. An example would be the String object which returns a new string for every operation that modifies. 
+Static: 
+  Does not need instantiation to use the method. Instead it is called by ClassName.methodName()
+Dynamic: 
+	Needs an instantiation to use the method. Called by InstanceName.methodNamde()
+Overriding: 
+Providing a new implementation (more specific implementation) for a method in a subclass that extends a parent class. An example would be overriding the equals method from Object in a subclass. 
+Overloading: 
+Allowing for multiple method declarations that accept different parameters despite having the same name. Allows for runtime specific calls to methods, will always be handled by the most specific case. 
+Abstract Data Type: 
+An abstract data type is a skeletal data structure that is defined solely by its operations and their intended effects and not by its implementation. The implementation lives below the abstract class and can be implemented however the programmer sees fit (for example, implementing a Map as a Binary Search Tree). 
+Equivalence Partitioning: 
+	Instead of testing all possible vectors only test  one vector from each class with its own rules.
+Boundary Value analysis: 
+	Test where difference test classes meet. 
+Specs/Requirements:
+Requirements are needed goals. Specifications come from requirements as ways to meet these goals. Not implementation. I.E. Requirement for size() method to scale between than insert method. Define size() method to be O(1) and insert to be O(n)
+Statement coverage:
+	Has every line in the program been executed?
+Branch Coverage: 
+	Has the program taken all branches, both taken and not taken. 
+Path Coverage: 
+Has every sequence of branches been tried. I.E if there are two if statements have 00, 01, 10, 11 conditionals been tried? 
+Fred Brooks: 
+	Adding manpower to a late project will make it later. ½ testing, 1/3 designing, 1/6 coding. 
+Dynamic method dispatch: 
+Method types are unknown at compile time, as a result, which overloading method will be called is dispatched at runtime. 
+Ad-hoc polymorphism:
+	=function overloading  , provides need for dynamic method dispatch 
+Inclusion polymorphism: 
+Subclassing and casting to superclass. For example, ADT having a common framework and very different implementations but use the same methods to interact with client 
+Parametric polymorphism: 
+	Generic types. Less specific types, yet still type safe.
+Private:
+	Only in class
+Public:
+	Everywhere
+Protected:
+	In class, package, or subclass
+Default:
+	In class, or package
+Total Order:
+	Asymmetry: a <= b and b <= a then a = b
+	Transitivity a <= b b <= c then a <=c
+	Trichotomy: a is either < b or >b or == b 
+Refactoring: 
+	Private classes
+	Singleton
+	Private members
+	Using null
+	Absorb subclasses in baseclass
+Efficiency: 
+	Big(O) bounded above
+	Big Omega bounded below
+	Big Theta bounded between
+
+
+
